@@ -40,9 +40,4 @@ namespace Yohash.React
     public abstract void InitializeComponent(State state);
     public abstract void UpdateComponent(State oldState, State newState);
   }
-
-  public abstract class Behaviour : Component
-  {
-
-  }
 }

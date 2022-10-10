@@ -1,7 +1,7 @@
 ﻿namespace Yohash.React
 {
   [System.Serializable]
-  public struct StateContainer
+  public abstract class StateContainer
   {
     // TBD
     //public bool IsDirty = false;
@@ -13,10 +13,6 @@
       }
     }
 
-    // override this to reduce state
-    public StateContainer Reduce(Action action)
-    {
-      return Copy;
-    }
+    public abstract StateContainer Reduce(Action action);
   }
 }
