@@ -1,0 +1,30 @@
+{
+  "name": "com.yohash.react",
+  "version": "0.1.0",
+  "displayName": "UnityReact",
+  "description": "A backend state management system loosely modeled after React",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "dependencies": { },
+  "keywords": [
+    "react",
+    "state",
+    "reducer"
+  ],
+  "samples": [
+    {
+      "displayName": "Setup for Custom IK",
+      "description": "The Custom IK scripts will perform IK by iteratively testing rotations. This sample scene shows you how to set up a basic robot limb with Custom IK",
+      "path": "Samples~/SetupCustomIK"
+    }
+  ],
+  "author": {
+    "name": "Jason Heebl",
+    "email": "jdheebl@gmail.com",
+    "url": "https://www.heebl.com"
+  },
+  "type": "tool"
+}
