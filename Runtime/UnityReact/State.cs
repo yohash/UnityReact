@@ -3,22 +3,30 @@
 namespace Yohash.React
 {
   [System.Serializable]
-  public struct State
+  public class State
   {
-    private List<StateContainer> containers;
+    private List<StateContainer> containers
+      = new List<StateContainer>();
 
-    public void AddState(StateContainer container)
-    {
-      if (containers == null) {
-        containers = new List<StateContainer>();
-      }
-      containers.Add(container);
+    public List<StateContainer> Containers {
+      get { return containers; }
     }
+
+    public int Count { get { return containers.Count; } }
 
     public State Copy {
       get {
-        return (State)MemberwiseClone();
+        var copy = new State();
+        foreach (var container in containers) {
+          copy.AddState(container.Copy);
+        }
+        return copy;
       }
+    }
+
+    public void AddState(StateContainer container)
+    {
+      containers.Add(container);
     }
 
     public State Reduce(Action action)
@@ -27,17 +35,6 @@ namespace Yohash.React
         containers[i].Reduce(action);
       }
       return this;
-    }
-
-    // TBD best way to get individual state containers
-    // to components that request them, vs. sending
-    // all state
-    public StateContainer GetState<T>()
-    {
-      foreach (var state in containers) {
-        if (state is T) { return state; }
-      }
-      return new StateContainer();
     }
   }
 }

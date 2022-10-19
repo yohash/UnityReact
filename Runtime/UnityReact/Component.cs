@@ -1,31 +1,50 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Yohash.React
 {
-  public abstract class Component : MonoBehaviour
+  public abstract class Props
+  {
+    public abstract List<StateContainer> state { get; }
+    public abstract void SetState(List<StateContainer> containers);
+    public Props Copy { get { return (Props)MemberwiseClone(); } }
+  };
+
+  public abstract class Component<T> : MonoBehaviour
+    where T : Props
   {
     private bool initialized = false;
     private Queue<Action> _queue = new Queue<Action>();
 
-    private void OnEnable()
+    public abstract T props { get; }
+    protected T oldProps;
+
+    private void Update()
     {
-      Store.Instance.Subscribe(UpdateComponent, InitializeComponent);
+      if (!initialized) {
+        subscribe();
+      }
     }
 
-    private void OnDisable()
+    private bool subscribe()
     {
-      Store.Instance.Unsubscribe(UpdateComponent);
-    }
+      if (Store.Instance == null) { return false; }
 
-    protected virtual void Start()
-    {
-      initialized = true;
+      Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
 
       while (_queue.Count > 0) {
         Action waiting = _queue.Dequeue();
         dispatch(waiting);
       }
+
+      initialized = true;
+      return true;
+    }
+
+    private void OnDisable()
+    {
+      Store.Instance.Unsubscribe(onStoreUpdate);
     }
 
     protected void dispatch(Action action)
@@ -37,7 +56,42 @@ namespace Yohash.React
       Store.Instance.Dispatch(action);
     }
 
-    public abstract void InitializeComponent(State state);
-    public abstract void UpdateComponent(State oldState, State newState);
+    internal void onStoreInitialize(State state)
+    {
+      // first we build props from state, then assign
+      // old props to the same set of props
+      buildProps(state);
+      oldProps = (T)props.Copy;
+      InitializeComponent();
+    }
+
+    internal void onStoreUpdate(State oldState, State state)
+    {
+      oldProps = (T)props.Copy;
+      buildProps(state);
+      if (propsDidUpdate()) {
+        UpdateComponent();
+      }
+    }
+
+    internal void buildProps(State state)
+    {
+      var stateContainers = new List<StateContainer>();
+
+      foreach (var container in state.Containers) {
+        if (props.state.Any(t => container.GetType().Equals(t.GetType()))) {
+          stateContainers.Add(container);
+        }
+      }
+      props.SetState(stateContainers);
+    }
+
+    internal bool propsDidUpdate()
+    {
+      return props.state.Any(s => s.IsDirty);
+    }
+
+    public abstract void InitializeComponent();
+    public abstract void UpdateComponent();
   }
 }
