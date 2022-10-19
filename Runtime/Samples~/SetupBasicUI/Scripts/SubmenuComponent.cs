@@ -44,7 +44,6 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
 
   public override void UpdateComponent()
   {
-    Debug.LogWarning("Submenu update");
     Submenu.SetActive(props.Submenu.IsOpen);
 
     if (!oldProps.Submenu.SubmenuColor.Equals(props.Submenu.SubmenuColor)) {
