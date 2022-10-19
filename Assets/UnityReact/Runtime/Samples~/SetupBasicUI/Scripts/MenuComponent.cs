@@ -55,7 +55,6 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
 
   public override void UpdateComponent()
   {
-    UnityEngine.Debug.LogWarning("Menu update");
     updateView();
   }
 
@@ -66,7 +65,6 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
 
     OpenSubmenu.interactable = !props.Menu.Locked;
     for (int i = 0; i < WhichButtons.Length; i++) {
-      var action = new PressButtonAction() { Index = i };
       WhichButtons[i].interactable = !props.Menu.Locked;
     }
     ValueSlider.interactable = !props.Menu.Locked;
