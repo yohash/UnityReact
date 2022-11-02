@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Yohash.React
@@ -32,9 +31,11 @@ namespace Yohash.React
 
     // a public flag and local vars for queueing actions
     public bool ActionQueueing = true;
-    public int Subscribed = 0;
     private bool processing = false;
     private Queue<Action> actionQueue;
+
+    private int _subscribed = 0;
+    public int Subscribed { get { return _subscribed; } }
 
     public Store(
       List<StateContainer> containers,
@@ -56,10 +57,10 @@ namespace Yohash.React
       actionQueue = new Queue<Action>();
     }
 
-    public void Subscribe(UpdateDelegate update, Action<State> initialize)
+    public void Subscribe(UpdateDelegate update, System.Action<State> initialize)
     {
       OnStoreUpdate += update;
-      Subscribed++;
+      _subscribed++;
 
       initialize(state);
     }
@@ -67,7 +68,7 @@ namespace Yohash.React
     public void Unsubscribe(UpdateDelegate update)
     {
       OnStoreUpdate -= update;
-      Subscribed--;
+      _subscribed--;
     }
 
     public void Dispatch(Action action)
