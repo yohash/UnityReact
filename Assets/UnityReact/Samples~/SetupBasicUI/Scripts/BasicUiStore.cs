@@ -14,7 +14,7 @@ public class BasicUiStore : MonoBehaviour
       new SubmenuState()
     };
     var middleware = new List<Middleware>() {
-
+      new SubmenuMiddleware()
     };
 
     store = new Store(state, middleware);

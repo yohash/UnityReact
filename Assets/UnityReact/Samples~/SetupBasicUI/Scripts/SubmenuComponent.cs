@@ -28,6 +28,10 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
 
   public Button ChangeColorButton;
   public Button Close;
+  public Button Reset;
+  public Button ShowSlider;
+
+  public Text Subtext;
 
   public Image Background;
 
@@ -38,6 +42,8 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
   {
     ChangeColorButton.onClick.AddListener(() => dispatch(new CycleSubmenuColorAction()));
     Close.onClick.AddListener(() => dispatch(new CloseSubmenuAction()));
+    Reset.onClick.AddListener(() => dispatch(new ResetButtonPressedAction()));
+    ShowSlider.onClick.AddListener(() => dispatch(new SubMenuShowSliderValueAction()));
 
     Submenu.SetActive(props.Submenu.IsOpen);
   }
@@ -45,6 +51,8 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
   public override void UpdateComponent()
   {
     Submenu.SetActive(props.Submenu.IsOpen);
+
+    Subtext.text = props.Submenu.Subtext;
 
     if (!oldProps.Submenu.SubmenuColor.Equals(props.Submenu.SubmenuColor)) {
       Background.color = props.Submenu.SubmenuColor;
