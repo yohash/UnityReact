@@ -24,6 +24,18 @@ namespace Yohash.React
       }
     }
 
+    public bool TryGetState<T>(out T sc) where T : StateContainer
+    {
+      foreach (var container in containers) {
+        if (container is T) {
+          sc = (T)container;
+          return true;
+        }
+      }
+      sc = default(T);
+      return false;
+    }
+
     public void AddState(StateContainer container)
     {
       containers.Add(container);

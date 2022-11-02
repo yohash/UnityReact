@@ -24,4 +24,12 @@
     /// </summary>
     protected abstract bool reduce(Action action);
   }
+
+  public class EmptyStateContainer : StateContainer
+  {
+    protected override bool reduce(Action action)
+    {
+      return false;
+    }
+  }
 }
