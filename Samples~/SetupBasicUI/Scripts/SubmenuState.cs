@@ -7,6 +7,8 @@ public class SubmenuState : StateContainer
 
   public bool IsOpen;
 
+  public string Subtext;
+
   protected override bool reduce(Action action)
   {
     switch (action) {
@@ -30,6 +32,10 @@ public class SubmenuState : StateContainer
       case MenuLockAction _: {
           // close the submenu if we lock the interface
           IsOpen = false;
+          return true;
+        }
+      case SetSubTextAction ssta: {
+          Subtext = ssta.Text;
           return true;
         }
     }
