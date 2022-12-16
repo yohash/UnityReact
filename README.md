@@ -10,5 +10,5 @@ Add to your project via the Unity Package Manager.
 
 The `upm` branch is maintained us a current subtree via:
 ```
-git subtree split --prefix=Assets/RotateMe --branch upm
+git subtree split --prefix=Assets/UnityReact --branch upm
 ```
