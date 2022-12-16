@@ -22,6 +22,7 @@ namespace Yohash.React
 
     public bool Log = false;
 
+    public State State => state;
     [SerializeField] private State state;
 
     private List<Middleware> middleware;

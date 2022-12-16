@@ -13,9 +13,7 @@
 
     public void Reduce(Action action)
     {
-      IsDirty = true;
-      var didReduce = reduce(action);
-      if (!didReduce) { IsDirty = false; }
+      IsDirty = reduce(action);
     }
 
     /// <summary>
