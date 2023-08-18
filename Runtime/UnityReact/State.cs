@@ -28,11 +28,11 @@ namespace Yohash.React
     {
       foreach (var container in containers) {
         if (container is T) {
-          sc = (T)container;
+          sc = container as T;
           return true;
         }
       }
-      sc = default(T);
+      sc = default;
       return false;
     }
 

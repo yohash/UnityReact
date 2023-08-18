@@ -15,7 +15,7 @@ public class MenuProps : Props
   {
     foreach (var container in containers) {
       if (container is MenuState) {
-        Menu = (MenuState)container.Copy;
+        Menu = container.Copy as MenuState;
       }
     }
   }

@@ -16,7 +16,7 @@ public class SubMenuProps : Props
   {
     foreach (var container in containers) {
       if (container is SubmenuState) {
-        Submenu = (SubmenuState)container.Copy;
+        Submenu = container.Copy as SubmenuState;
       }
     }
   }

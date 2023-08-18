@@ -15,7 +15,7 @@ namespace Yohash.React
   {
     public abstract List<StateContainer> state { get; }
     public abstract void SetState(List<StateContainer> containers);
-    public Props Copy { get { return (Props)MemberwiseClone(); } }
+    public Props Copy { get { return MemberwiseClone() as Props; } }
   };
 
   public abstract class Component<T> : MonoBehaviour
@@ -68,13 +68,13 @@ namespace Yohash.React
       // first we build props from state, then assign
       // old props to the same set of props
       buildProps(state);
-      oldProps = (T)props.Copy;
+      oldProps = props.Copy as T;
       InitializeComponent();
     }
 
     internal void onStoreUpdate(State oldState, State state)
     {
-      oldProps = (T)props.Copy;
+      oldProps = props.Copy as T;
       buildProps(state);
       if (propsDidUpdate()) {
         UpdateComponent();
