@@ -7,7 +7,7 @@
 
     public StateContainer Copy {
       get {
-        return (StateContainer)MemberwiseClone();
+        return MemberwiseClone() as StateContainer;
       }
     }
 
