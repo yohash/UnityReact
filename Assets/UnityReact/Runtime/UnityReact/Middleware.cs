@@ -2,10 +2,10 @@
 {
   public abstract class Middleware
   {
-    public abstract Action HandleAction(
+    public abstract IAction HandleAction(
       State state,
-      Action action,
-      System.Action<Action> dispatch
+      IAction action,
+      System.Action<IAction> dispatch
     );
   }
 }

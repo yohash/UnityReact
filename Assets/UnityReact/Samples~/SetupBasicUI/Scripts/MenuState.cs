@@ -9,7 +9,7 @@ public class MenuState : StateContainer
 
   public bool Locked = false;
 
-  protected override bool reduce(Action action)
+  protected override bool reduce(IAction action)
   {
     switch (action) {
       case SliderAction sa: {

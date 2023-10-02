@@ -2,7 +2,7 @@ using Yohash.React;
 
 public class SubmenuMiddleware : Middleware
 {
-  public override Action HandleAction(State state, Action action, System.Action<Action> dispatch)
+  public override IAction HandleAction(State state, IAction action, System.Action<IAction> dispatch)
   {
     switch (action) {
       case ResetButtonPressedAction rbpa:

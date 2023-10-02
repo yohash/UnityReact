@@ -41,7 +41,7 @@ namespace Yohash.React
       containers.Add(container);
     }
 
-    public State Reduce(Action action)
+    public State Reduce(IAction action)
     {
       for (int i = 0; i < containers.Count; i++) {
         containers[i].Reduce(action);
