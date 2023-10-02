@@ -9,7 +9,7 @@ public class SubmenuState : StateContainer
 
   public string Subtext;
 
-  protected override bool reduce(Action action)
+  protected override bool reduce(IAction action)
   {
     switch (action) {
       case OpenSubmenuAction _: {

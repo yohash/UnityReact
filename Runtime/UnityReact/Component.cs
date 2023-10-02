@@ -22,7 +22,7 @@ namespace Yohash.React
     where T : Props
   {
     private bool initialized = false;
-    private Queue<Action> _queue = new Queue<Action>();
+    private Queue<IAction> _queue = new Queue<IAction>();
 
     public abstract T props { get; }
     protected T oldProps;
@@ -41,7 +41,7 @@ namespace Yohash.React
       Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
 
       while (_queue.Count > 0) {
-        Action waiting = _queue.Dequeue();
+        IAction waiting = _queue.Dequeue();
         dispatch(waiting);
       }
 
@@ -54,7 +54,7 @@ namespace Yohash.React
       Store.Instance.Unsubscribe(onStoreUpdate);
     }
 
-    protected void dispatch(Action action)
+    protected void dispatch(IAction action)
     {
       if (!initialized) {
         _queue.Enqueue(action);

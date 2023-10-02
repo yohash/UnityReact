@@ -33,7 +33,7 @@ namespace Yohash.React
     // a public flag and local vars for queueing actions
     public bool ActionQueueing = true;
     private bool processing = false;
-    private Queue<Action> actionQueue;
+    private Queue<IAction> actionQueue;
 
     private int _subscribed = 0;
     public int Subscribed { get { return _subscribed; } }
@@ -55,7 +55,7 @@ namespace Yohash.React
         middleware.Add(middlewares[i]);
       }
 
-      actionQueue = new Queue<Action>();
+      actionQueue = new Queue<IAction>();
     }
 
     public void Subscribe(UpdateDelegate update, System.Action<State> initialize)
@@ -72,7 +72,7 @@ namespace Yohash.React
       _subscribed--;
     }
 
-    public void Dispatch(Action action)
+    public void Dispatch(IAction action)
     {
       if (ActionQueueing && processing) {
         actionQueue.Enqueue(action);

@@ -11,7 +11,7 @@
       }
     }
 
-    public void Reduce(Action action)
+    public void Reduce(IAction action)
     {
       IsDirty = reduce(action);
     }
@@ -20,12 +20,12 @@
     /// This reduce function should return a bool
     /// that indicates DidStateUpdate
     /// </summary>
-    protected abstract bool reduce(Action action);
+    protected abstract bool reduce(IAction action);
   }
 
   public class EmptyStateContainer : StateContainer
   {
-    protected override bool reduce(Action action)
+    protected override bool reduce(IAction action)
     {
       return false;
     }
