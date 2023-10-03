@@ -1,24 +1,24 @@
 using Yohash.React;
 
-public class PressButtonAction : IAction
+public struct PressButtonAction : IAction
 {
   public int Index;
 }
 
-public class SliderAction : IAction
+public struct SliderAction : IAction
 {
   public float Value;
 }
 
-public class SetSubTextAction : IAction
+public struct SetSubTextAction : IAction
 {
   public string Text;
 }
 
-public class SubMenuShowSliderValueAction : IAction { }
+public struct SubMenuShowSliderValueAction : IAction { }
 
-public class ResetButtonPressedAction : IAction { }
-public class OpenSubmenuAction : IAction { }
-public class CloseSubmenuAction : IAction { }
-public class CycleSubmenuColorAction : IAction { }
-public class MenuLockAction : IAction { }
+public struct ResetButtonPressedAction : IAction { }
+public struct OpenSubmenuAction : IAction { }
+public struct CloseSubmenuAction : IAction { }
+public struct CycleSubmenuColorAction : IAction { }
+public struct MenuLockAction : IAction { }
