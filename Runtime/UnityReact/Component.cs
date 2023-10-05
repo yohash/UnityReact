@@ -34,9 +34,10 @@ namespace Yohash.React
       }
     }
 
-    private bool subscribe()
+    private void subscribe()
     {
-      if (Store.Instance == null) { return false; }
+      if (Store.Instance == null) { return; }
+      initialized = true;
 
       Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
 
@@ -44,9 +45,6 @@ namespace Yohash.React
         IAction waiting = _queue.Dequeue();
         dispatch(waiting);
       }
-
-      initialized = true;
-      return true;
     }
 
     private void OnDisable()
