@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2023-10-24
+
+### Fixed
+
+- Changed `Component.cs` unsubscribe to `OnDestroy` vs. `OnDisable` to allow subscribed gameobjects to disable without losing connection to react subsystems
+
 ## [0.2.2] - 2023-10-05
 
 ### Fixed
