@@ -47,7 +47,7 @@ namespace Yohash.React
       }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
       Store.Instance.Unsubscribe(onStoreUpdate);
     }
