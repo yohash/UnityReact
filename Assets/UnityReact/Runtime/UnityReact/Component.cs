@@ -49,7 +49,7 @@ namespace Yohash.React
 
     private void OnDestroy()
     {
-      Store.Instance.Unsubscribe(onStoreUpdate);
+      Store.Instance?.Unsubscribe(onStoreUpdate);
     }
 
     protected void dispatch(IAction action)
