@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using Yohash.React;
@@ -17,6 +16,8 @@ public partial class StateViewer : EditorWindow
   private static string[] titles;
   private static bool[] toggles;
 
+  private static bool showDebug = false;
+
   private Dictionary<string, managedToggle> embeddedToggles = new Dictionary<string, managedToggle>();
 
   [MenuItem("Yohash/React/State Viewer", false, 800)]
@@ -29,6 +30,8 @@ public partial class StateViewer : EditorWindow
   private void OnGUI()
   {
     scroll = EditorGUILayout.BeginScrollView(scroll);
+
+    showDebug = GUILayout.Toggle(showDebug, "Show Debug Info");
     for (int i = 0; i < baseState.Value.Count; i++) {
       toggles[i] = GUILayout.Toggle(toggles[i], titles[i], toggles[i] ? Styles.OpenHeader.Value : Styles.ClosedHeader.Value);
       if (toggles[i]) {
@@ -147,7 +150,7 @@ public partial class StateViewer : EditorWindow
       ? type.GetGenericTypeDefinition()
       : null;
 
-    //fieldInfoProperties(value, type);
+    if (showDebug) { fieldInfoProperties(value, type); }
 
     // (1) check for "simple" displays, primitives, enums, and strings
     if (type.IsPrimitive || type.IsEnum || (type.IsClass && type.Name == "String")) {
@@ -174,7 +177,7 @@ public partial class StateViewer : EditorWindow
 
       // call the helper method to render the contents
       var enumerable = (IEnumerable)value;
-      var key = string.Concat(value.GetHashCode(), name);
+      var key = string.Concat(type.ToString(), name);
       //fieldInfoProperties(parent, info);
       renderIEnumerable(title, type, enumerable, key, nested);
     }
@@ -186,7 +189,7 @@ public partial class StateViewer : EditorWindow
 
       // call the helper method to render the contents
       var array = (IEnumerable)value;
-      var key = string.Concat(value.GetHashCode(), name);
+      var key = string.Concat(type.ToString(), name);
       //fieldInfoProperties(parent, info);
       renderIEnumerable(title, type, array, key, nested);
     }
@@ -212,7 +215,7 @@ public partial class StateViewer : EditorWindow
     // (5) capture classes -- only non-primitive, non-IList, non-string classes should remain
     // (6) capture structs -- they will render the same way
     else if (type.IsClass || type.IsValueType) {
-      var key = string.Concat(value.GetHashCode(), name);
+      var key = string.Concat(type.ToString(), name);
       renderStructOrClass(type, value, name, key, nested);
     }
     // (etc...) any other generic object
@@ -292,7 +295,6 @@ public partial class StateViewer : EditorWindow
 
     if (embeddedToggles[key].IsOn) {
       try {
-        int line = 0;
         if (length == 0) {
           GUILayout.Box("\tNO CONTENTS", Styles.ContainerBackground.Value);
         } else {
@@ -303,7 +305,7 @@ public partial class StateViewer : EditorWindow
           if (type.IsArray || args.Count() == 1) {
             int index = 0;
             foreach (var item in enumerable) {
-              string print = $"<b>[{line++}]</b>";
+              string print = $"<b>[{index}]</b>";
               GUILayout.BeginHorizontal(Styles.ContainerContents.Value);
               GUILayout.Box(print, Styles.Index.Value, GUILayout.Height(30), GUILayout.Width(40));
 
@@ -311,7 +313,7 @@ public partial class StateViewer : EditorWindow
               // progressively lower within each other
               GUILayout.BeginVertical(Styles.OpenHeader_Container.Value, GUILayout.ExpandWidth(true));
               var itemType = item.GetType();
-              testTypeInfoAndDrawRecursively(item, itemType, "", nested + 1);
+              testTypeInfoAndDrawRecursively(item, itemType, $"Item[{index}]", nested + 1);
               GUILayout.EndVertical();
 
               GUILayout.EndHorizontal();
@@ -329,7 +331,7 @@ public partial class StateViewer : EditorWindow
               var entryKey = pair[0].GetValue(kvp);
               var entryValue = pair[1].GetValue(kvp);
 
-              string printIndex = $"<b>[{line++}]</b>";
+              string printIndex = $"<b>[{index}]</b>";
               GUILayout.BeginHorizontal(Styles.ContainerContents.Value);
 
               embeddedToggles[key].Contents[index] = GUILayout.Toggle(
@@ -346,7 +348,7 @@ public partial class StateViewer : EditorWindow
               // build the key in its own expandable box, in case it's complex
               GUILayout.BeginVertical(Styles.OpenHeader_Container.Value, GUILayout.ExpandWidth(true));
               var keyType = entryKey.GetType();
-              testTypeInfoAndDrawRecursively(entryKey, keyType, "Key", nested + 1);
+              testTypeInfoAndDrawRecursively(entryKey, keyType, $"Key[{index}]", nested + 1);
               GUILayout.EndVertical();
 
 
@@ -355,7 +357,7 @@ public partial class StateViewer : EditorWindow
                 // similarily for the value, build in the next vertical block
                 GUILayout.BeginVertical(Styles.OpenHeader_Container.Value, GUILayout.ExpandWidth(true));
                 var valueType = entryValue.GetType();
-                testTypeInfoAndDrawRecursively(entryValue, valueType, "Value", nested + 1);
+                testTypeInfoAndDrawRecursively(entryValue, valueType, $"Value[{index}]", nested + 1);
                 GUILayout.EndVertical();
               }
 
