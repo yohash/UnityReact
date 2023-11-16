@@ -617,6 +617,7 @@ MonoBehaviour:
   Index: 0
   Increment: {fileID: 4541002368028839368}
   Decrement: {fileID: 6148846423036388168}
+  Text: {fileID: 3097448991426102251}
 --- !u!1 &7686739608753933527
 GameObject:
   m_ObjectHideFlags: 0
