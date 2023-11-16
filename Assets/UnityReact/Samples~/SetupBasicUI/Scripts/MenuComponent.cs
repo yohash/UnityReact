@@ -1,6 +1,9 @@
 using UnityEngine.UI;
+using System.Linq;
 using System.Collections.Generic;
 using Yohash.React;
+using UnityEngine;
+using System.Threading.Tasks;
 
 public class MenuProps : Props
 {
@@ -23,6 +26,10 @@ public class MenuProps : Props
 
 public class MenuComponent : Yohash.React.Component<MenuProps>
 {
+  [Header("Assign Prefab")]
+  public GameObject ListObjectPrefab;
+
+  [Header("Assign UI components in hierarchy")]
   public Text WhichButtonPressed;
   public Text SliderValue;
 
@@ -30,6 +37,10 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
 
   public Button Lock;
   public Button OpenSubmenu;
+
+  public RectTransform ScrollviewContent;
+  public Button AddListObject;
+  public Button RemoveListObject;
 
   public Slider ValueSlider;
 
@@ -50,12 +61,41 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
       WhichButtons[i].onClick.AddListener(() => dispatch(action));
     }
 
+    AddListObject.onClick.AddListener(() => dispatch(new ListAddObject()));
+    RemoveListObject.onClick.AddListener(() => dispatch(new ListRemoveObject()));
+
     updateView();
   }
 
-  public override void UpdateComponent()
+  public override IEnumerable<Element> UpdateComponent()
   {
     updateView();
+
+    var listObjects = props.Menu.ListValues
+      .Select((v, index) => new Element(
+          mountListItem,
+          "ListObject" + index.ToString(),
+          ScrollviewContent
+        )
+      ).ToList();
+
+    return listObjects;
+  }
+
+  /// <summary>
+  /// Thought this mount method is async, we are performing
+  /// a simple, sychronous prefab instantiation.
+  /// A better implementation would be to load the prefab from
+  /// file asynchronously, using for example, the AssetBundle API.
+  /// </summary>
+  /// <returns></returns>
+  private async Task<IComponent> mountListItem()
+  {
+    var child = Instantiate(ListObjectPrefab);
+    child.transform.SetParent(ScrollviewContent);
+    child.transform.localPosition = Vector3.zero;
+    child.transform.rotation = Quaternion.identity;
+    return child.GetComponent<IComponent>();
   }
 
   private void updateView()
