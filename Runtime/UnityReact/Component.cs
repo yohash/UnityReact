@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 namespace Yohash.React
 {
@@ -26,8 +24,7 @@ namespace Yohash.React
     private bool initialized = false;
     private Queue<IAction> _queue = new Queue<IAction>();
 
-    private Dictionary<string, Element> children
-      = new Dictionary<string, Element>();
+    private HashSet<Element> children = new HashSet<Element>();
 
     public abstract T props { get; }
 
@@ -59,6 +56,12 @@ namespace Yohash.React
     private void OnDestroy()
     {
       Store.Instance?.Unsubscribe(onStoreUpdate);
+      // iterate backwards over the children, destroying each one
+      for (int i = children.Count - 1; i >= 0; i--) {
+        var child = children.ElementAt(i);
+        children.Remove(child);
+        Destroy(child.Component.Transform.gameObject);
+      }
     }
 
     protected void dispatch(IAction action)
@@ -106,21 +109,19 @@ namespace Yohash.React
       // check list of elements for
       // (1) new elements - to mount & add
       // (2) missing elements - to destroy & remove
-      var newElements = elements.Where(e => !children.ContainsKey(e.Address)).ToList();
+      var newElements = elements.Where(e => !children.Any(c => c.Address == e.Address)).ToList();
       var missing = children
-        .Where(c => !elements.Any(e => e.Address == c.Key))
-        .Select(kvp => kvp.Value)
+        .Where(c => !elements.Any(e => e.Address == c.Address))
         .ToList();
 
       // (1) mount & add - new elements
       foreach (var element in newElements) {
         // immediately add the child element so it is tracked while
         // the mounter is generating the component
-        children.Add(element.Address, element);
-        element.Component = await element.Mount;
-        element.Component.Transform.SetParent(element.Parent);
-        element.Component.Transform.localPosition = Vector3.zero;
-        element.Component.Transform.localRotation = Quaternion.identity;
+        children.Add(element);
+        // the mounting method is awaited so that we can perform
+        // async file or web IO to download assets
+        element.Component = await element.Mount();
       }
 
       // (2) destroy & remove - missing elements
@@ -129,7 +130,7 @@ namespace Yohash.React
           && element.Component.Transform != null) {
           Destroy(element.Component.Transform.gameObject);
         }
-        children.Remove(element.Address);
+        children.Remove(element);
       }
     }
 

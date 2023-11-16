@@ -18,5 +18,6 @@ public class BasicUiStore : MonoBehaviour
     };
 
     store = new Store(state, middleware);
+    store.Log = true;
   }
 }
