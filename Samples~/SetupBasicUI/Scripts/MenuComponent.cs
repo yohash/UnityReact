@@ -71,22 +71,21 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
   {
     updateView();
 
-    var listObjects = props.Menu.ListValues
+    return props.Menu.ListValues
       .Select((v, index) => new Element(
           mountListItem,
           "ListObject" + index.ToString(),
           ScrollviewContent
         )
-      ).ToList();
-
-    return listObjects;
+      );
   }
 
   /// <summary>
   /// Thought this mount method is async, we are performing
   /// a simple, sychronous prefab instantiation.
   /// A better implementation would be to load the prefab from
-  /// file asynchronously, using for example, the AssetBundle API.
+  /// file asynchronously, using for example, the AssetBundle API,
+  /// and hooking into other asset tools, like object pools
   /// </summary>
   /// <returns></returns>
   private async Task<IComponent> mountListItem()

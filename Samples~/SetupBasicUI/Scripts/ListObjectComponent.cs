@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using Yohash.React;
 
-
 public class ListProps : Props
 {
   public MenuState Menu = new MenuState();
@@ -32,6 +31,8 @@ public class ListObjectComponent : Yohash.React.Component<ListProps>
   public Button Increment;
   public Button Decrement;
 
+  public Text Text;
+
   public override void InitializeComponent()
   {
     Index = transform.GetSiblingIndex();
@@ -43,10 +44,19 @@ public class ListObjectComponent : Yohash.React.Component<ListProps>
       Index = Index,
       ValueBy = -1
     }));
+    updateView();
   }
 
   public override IEnumerable<Element> UpdateComponent()
   {
+    updateView();
     return new List<Element>();
+  }
+
+  private void updateView()
+  {
+    Text.text = Index >= props.Menu.ListValues.Length
+      ? "null"
+      : props.Menu.ListValues[Index].ToString();
   }
 }
