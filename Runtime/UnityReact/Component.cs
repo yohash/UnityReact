@@ -92,10 +92,7 @@ namespace Yohash.React
     {
       // check list of elements for
       // (1) new elements - to mount & add
-      // (2) missing elements - to destroy & remove
-
       var newElements = elements.Where(e => !children.Any(c => c.Address == e.Address)).ToList();
-      // (1) mount & add - new elements
       foreach (var element in newElements) {
         // immediately add the child element so it is tracked while
         // the mounter is generating the component
@@ -105,8 +102,8 @@ namespace Yohash.React
         element.Component = await element.Mount();
       }
 
-      var missing = children        .Where(c => !elements.Any(e => e.Address == c.Address))        .ToList();
       // (2) destroy & remove - missing elements
+      var missing = children.Where(c => !elements.Any(e => e.Address == c.Address)).ToList();
       foreach (var element in missing) {
         if (element.Component != null
           && element.Component.Transform != null) {
