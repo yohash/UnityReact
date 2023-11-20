@@ -1,5 +1,18 @@
 using Yohash.React;
 
+public struct ListObjectMountChild : IAction
+{
+  public int Index;
+  public bool Add;
+}
+public struct ListUpdateObject : IAction
+{
+  public int Index;
+  public int ValueBy;
+}
+public struct ListRemoveObject : IAction { }
+public struct ListAddObject : IAction { }
+
 public struct PressButtonAction : IAction
 {
   public int Index;

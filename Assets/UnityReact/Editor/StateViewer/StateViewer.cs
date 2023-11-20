@@ -11,7 +11,7 @@ public partial class StateViewer : EditorWindow
 {
   private static StateViewer window;
   private static Vector2 scroll;
-  private static Lazy<List<StateContainer>> baseState = new Lazy<List<StateContainer>>();
+  private static List<StateContainer> baseState = new List<StateContainer>();
 
   private static string[] titles;
   private static bool[] toggles;
@@ -32,10 +32,10 @@ public partial class StateViewer : EditorWindow
     scroll = EditorGUILayout.BeginScrollView(scroll);
 
     showDebug = GUILayout.Toggle(showDebug, "Show Debug Info");
-    for (int i = 0; i < baseState.Value.Count; i++) {
+    for (int i = 0; i < baseState.Count; i++) {
       toggles[i] = GUILayout.Toggle(toggles[i], titles[i], toggles[i] ? Styles.OpenHeader.Value : Styles.ClosedHeader.Value);
       if (toggles[i]) {
-        drawContainer(baseState.Value[i]);
+        drawContainer(baseState[i]);
       }
     }
     EditorGUILayout.EndScrollView();
@@ -45,9 +45,9 @@ public partial class StateViewer : EditorWindow
   {
     if (Store.Instance != null
       && Store.Instance.OnStoreUpdate != null
-      && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateView")
+      && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
     ) {
-      Store.Instance.OnStoreUpdate += updateView;
+      Store.Instance.OnStoreUpdate += updateStateView;
     }
     if (!Application.isPlaying) {
       embeddedToggles = new Dictionary<string, managedToggle>();
@@ -58,7 +58,7 @@ public partial class StateViewer : EditorWindow
   // ******************************************************************
   //  PRIVATE METHODS
   // ******************************************************************
-  private void updateView(State oldState, State newState)
+  private void updateStateView(State oldState, State newState)
   {
     populateState();
   }
@@ -69,18 +69,18 @@ public partial class StateViewer : EditorWindow
       .OrderBy(sc => sc.GetType().Name)
       .ToList();
 
-    if (baseState.Value.Count != allStateContainers.Count) {
-      baseState.Value.Clear();
-      baseState.Value.AddRange(allStateContainers);
-      titles = new string[baseState.Value.Count];
-      toggles = new bool[baseState.Value.Count];
+    if (baseState.Count != allStateContainers.Count) {
+      baseState.Clear();
+      baseState.AddRange(allStateContainers);
+      titles = new string[baseState.Count];
+      toggles = new bool[baseState.Count];
     } else {
-      baseState.Value.Clear();
-      baseState.Value.AddRange(allStateContainers);
+      baseState.Clear();
+      baseState.AddRange(allStateContainers);
     }
 
-    for (int i = 0; i < baseState.Value.Count; i++) {
-      titles[i] = baseState.Value[i].GetType().ToString();
+    for (int i = 0; i < baseState.Count; i++) {
+      titles[i] = baseState[i].GetType().ToString();
     }
   }
 
@@ -155,7 +155,7 @@ public partial class StateViewer : EditorWindow
     // (1) check for "simple" displays, primitives, enums, and strings
     if (type.IsPrimitive || type.IsEnum || (type.IsClass && type.Name == "String")) {
       //object value = info.GetValue(parent);
-      var printType = type.ToString().Split('.').Last().Split('`').First();
+      var printType = type.ToString().Split('.').Last().Split('`').First().Replace('+', '.');
 
       string typeText = $"<b>{printType}</b>: {name}";
       string valueText = $"{(value == null ? "NULL" : limit(value.ToString()))}";
@@ -170,8 +170,8 @@ public partial class StateViewer : EditorWindow
       // pretty-print the types of the enumerable and the contents
       var args = type.GetGenericArguments();
 
-      var printType = genericType.ToString().Split('.').Last().Split('`').First();
-      var printArg = string.Join(",", args.Select(t => t.ToString().Split('.').Last()));
+      var printType = genericType.ToString().Split('.').Last().Split('`').First().Replace('+', '.');
+      var printArg = string.Join(",", args.Select(t => t.ToString().Split('.').Last())).Replace('+', '.');
 
       string title = $"<b>{printType}<{printArg}></b>: {name}";
 
@@ -200,11 +200,13 @@ public partial class StateViewer : EditorWindow
       var args = type.GetGenericArguments();
       var printType = genericType == typeof(Nullable<>)
         // a nullable type
-        ? $"{args[0].ToString().Split('.').Last()}?"
+        ? $"{args[0].ToString().Split('.').Last().Replace('+', '.')}?"
         // may be a Tuple, we'll concat the args together in parentheses
-        : $"({string.Join(", ", args.Select(t => t.ToString().Split('.').Last()))})";
+        : $"({string.Join(", ", args.Select(t => t.ToString().Split('.').Last().Replace('+', '.')))})";
 
       string typeText = $"<b>{printType}</b>: {name}";
+      // TODO - finish this formating for either of these types that has a complex
+      // expandable value (like a nullable struct, for example)
       string valueText = $"{(value == null ? "NULL" : limit(value.ToString()))}";
 
       GUILayout.BeginHorizontal();
@@ -222,7 +224,7 @@ public partial class StateViewer : EditorWindow
     else {
       //object value = info.GetValue(parent);
       var args = type.GetGenericArguments();
-      var printType = type.ToString().Split('.').Last().Split('`').First();
+      var printType = type.ToString().Split('.').Last().Split('`').First().Replace('+', '.');
       string typeText = $"<b>{printType}</b>: {name}";
       string valueText = $"{(value == null ? "NULL" : limit(value.ToString()))}";
       GUILayout.BeginHorizontal();
@@ -250,7 +252,7 @@ public partial class StateViewer : EditorWindow
     // begin the vertical container that will display the expandable elements
     EditorGUILayout.BeginVertical(Styles.ContainerBackground.Value);
 
-    var printType = type.ToString().Split('.').Last().Split('`').First();
+    var printType = type.ToString().Split('.').Last().Split('`').First().Replace('+', '.');
     var typeText = $"<b>{printType}</b>: {name}";
 
     embeddedToggles[key].IsOn = GUILayout.Toggle(
@@ -312,6 +314,12 @@ public partial class StateViewer : EditorWindow
               // layer the box and contents to the right of the index, allowing us to layer containers
               // progressively lower within each other
               GUILayout.BeginVertical(Styles.OpenHeader_Container.Value, GUILayout.ExpandWidth(true));
+              if (item == null) {
+                GUILayout.Box("NULL", Styles.OpenHeader_Container.Value);
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+                break;
+              }
               var itemType = item.GetType();
               testTypeInfoAndDrawRecursively(item, itemType, $"Item[{index}]", nested + 1);
               GUILayout.EndVertical();
@@ -373,7 +381,7 @@ public partial class StateViewer : EditorWindow
         }
       } catch (Exception e) {
         Debug.LogError("Exception while rendering IENumberable: " + e.Message);
-        GUILayout.Box("\tNOT CREATED", Styles.OpenHeader_Container.Value);
+        throw;
       }
     }
     EditorGUILayout.EndVertical();

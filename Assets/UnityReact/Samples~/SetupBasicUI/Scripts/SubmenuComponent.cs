@@ -48,7 +48,7 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
     Submenu.SetActive(props.Submenu.IsOpen);
   }
 
-  public override void UpdateComponent()
+  public override IEnumerable<Element> UpdateComponent()
   {
     Submenu.SetActive(props.Submenu.IsOpen);
 
@@ -57,5 +57,7 @@ public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
     if (!oldProps.Submenu.SubmenuColor.Equals(props.Submenu.SubmenuColor)) {
       Background.color = props.Submenu.SubmenuColor;
     }
+
+    return new List<Element>();
   }
 }
