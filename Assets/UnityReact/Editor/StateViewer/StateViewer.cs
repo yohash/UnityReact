@@ -11,7 +11,7 @@ public partial class StateViewer : EditorWindow
 {
   private static StateViewer window;
   private static Vector2 scroll;
-  private static Lazy<List<StateContainer>> baseState = new Lazy<List<StateContainer>>();
+  private static List<StateContainer> baseState = new List<StateContainer>();
 
   private static string[] titles;
   private static bool[] toggles;
@@ -32,10 +32,10 @@ public partial class StateViewer : EditorWindow
     scroll = EditorGUILayout.BeginScrollView(scroll);
 
     showDebug = GUILayout.Toggle(showDebug, "Show Debug Info");
-    for (int i = 0; i < baseState.Value.Count; i++) {
+    for (int i = 0; i < baseState.Count; i++) {
       toggles[i] = GUILayout.Toggle(toggles[i], titles[i], toggles[i] ? Styles.OpenHeader.Value : Styles.ClosedHeader.Value);
       if (toggles[i]) {
-        drawContainer(baseState.Value[i]);
+        drawContainer(baseState[i]);
       }
     }
     EditorGUILayout.EndScrollView();
@@ -45,9 +45,9 @@ public partial class StateViewer : EditorWindow
   {
     if (Store.Instance != null
       && Store.Instance.OnStoreUpdate != null
-      && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateView")
+      && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
     ) {
-      Store.Instance.OnStoreUpdate += updateView;
+      Store.Instance.OnStoreUpdate += updateStateView;
     }
     if (!Application.isPlaying) {
       embeddedToggles = new Dictionary<string, managedToggle>();
@@ -58,7 +58,7 @@ public partial class StateViewer : EditorWindow
   // ******************************************************************
   //  PRIVATE METHODS
   // ******************************************************************
-  private void updateView(State oldState, State newState)
+  private void updateStateView(State oldState, State newState)
   {
     populateState();
   }
@@ -69,18 +69,18 @@ public partial class StateViewer : EditorWindow
       .OrderBy(sc => sc.GetType().Name)
       .ToList();
 
-    if (baseState.Value.Count != allStateContainers.Count) {
-      baseState.Value.Clear();
-      baseState.Value.AddRange(allStateContainers);
-      titles = new string[baseState.Value.Count];
-      toggles = new bool[baseState.Value.Count];
+    if (baseState.Count != allStateContainers.Count) {
+      baseState.Clear();
+      baseState.AddRange(allStateContainers);
+      titles = new string[baseState.Count];
+      toggles = new bool[baseState.Count];
     } else {
-      baseState.Value.Clear();
-      baseState.Value.AddRange(allStateContainers);
+      baseState.Clear();
+      baseState.AddRange(allStateContainers);
     }
 
-    for (int i = 0; i < baseState.Value.Count; i++) {
-      titles[i] = baseState.Value[i].GetType().ToString();
+    for (int i = 0; i < baseState.Count; i++) {
+      titles[i] = baseState[i].GetType().ToString();
     }
   }
 
