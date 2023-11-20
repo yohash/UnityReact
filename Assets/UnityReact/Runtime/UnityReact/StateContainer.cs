@@ -23,11 +23,16 @@
     protected abstract bool reduce(IAction action);
   }
 
-  public class EmptyStateContainer : StateContainer
+  public class EmptyPropsContainer : PropsContainer { }
+
+  public abstract class PropsContainer : StateContainer
   {
+    public static PropsContainer Empty = new EmptyPropsContainer();
+
     protected override bool reduce(IAction action)
     {
       return false;
     }
   }
 }
+

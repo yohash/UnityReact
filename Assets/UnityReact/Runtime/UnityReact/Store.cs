@@ -35,9 +35,6 @@ namespace Yohash.React
     private bool processing = false;
     private Queue<IAction> actionQueue;
 
-    private int _subscribed = 0;
-    public int Subscribed { get { return _subscribed; } }
-
     public Store(
       List<StateContainer> containers,
       List<Middleware> middlewares
@@ -61,7 +58,6 @@ namespace Yohash.React
     public void Subscribe(UpdateDelegate update, System.Action<State> initialize)
     {
       OnStoreUpdate += update;
-      _subscribed++;
 
       initialize(state);
     }
@@ -69,7 +65,6 @@ namespace Yohash.React
     public void Unsubscribe(UpdateDelegate update)
     {
       OnStoreUpdate -= update;
-      _subscribed--;
     }
 
     public void Dispatch(IAction action)
