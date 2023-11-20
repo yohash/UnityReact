@@ -72,10 +72,14 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
     updateView();
 
     return props.Menu.ListValues
-      .Select((v, index) => new Element(
+      .Select((dat, index) => new Element(
           mountListItem,
+          unmountListItem,
           "ListObject" + index.ToString(),
-          ScrollviewContent
+          new ListObjectProps() {
+            Data = dat,
+            Index = index
+          }
         )
       );
   }
@@ -87,7 +91,6 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
   /// file asynchronously, using for example, the AssetBundle API,
   /// and hooking into other asset tools, like object pools
   /// </summary>
-  /// <returns></returns>
   private async Task<IComponent> mountListItem()
   {
     var child = Instantiate(ListObjectPrefab);
@@ -95,6 +98,11 @@ public class MenuComponent : Yohash.React.Component<MenuProps>
     child.transform.localPosition = Vector3.zero;
     child.transform.rotation = Quaternion.identity;
     return child.GetComponent<IComponent>();
+  }
+
+  private async Task unmountListItem(IComponent component)
+  {
+    Destroy(component.Transform.gameObject);
   }
 
   private void updateView()

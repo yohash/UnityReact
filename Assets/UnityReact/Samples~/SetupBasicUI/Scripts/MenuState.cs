@@ -1,6 +1,12 @@
 using System;
 using Yohash.React;
 
+public struct ListObjectData
+{
+  public int Value;
+  public bool MountChild;
+}
+
 public class MenuState : StateContainer
 {
   public enum WhichButton { A, B, C }
@@ -10,7 +16,7 @@ public class MenuState : StateContainer
 
   public bool Locked = false;
 
-  public int[] ListValues = new int[0];
+  public ListObjectData[] ListValues = new ListObjectData[0];
 
   protected override bool reduce(IAction action)
   {
@@ -24,7 +30,11 @@ public class MenuState : StateContainer
           return true;
         }
       case ListUpdateObject luo: {
-          ListValues[luo.Index] += luo.ValueBy;
+          ListValues[luo.Index].Value += luo.ValueBy;
+          return true;
+        }
+      case ListObjectMountChild child: {
+          ListValues[child.Index].MountChild = child.Add;
           return true;
         }
 
