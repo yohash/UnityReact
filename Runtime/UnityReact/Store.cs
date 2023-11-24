@@ -58,7 +58,6 @@ namespace Yohash.React
     public void Subscribe(UpdateDelegate update, System.Action<State> initialize)
     {
       OnStoreUpdate += update;
-
       initialize(state);
     }
 

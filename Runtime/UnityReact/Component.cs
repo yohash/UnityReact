@@ -76,6 +76,8 @@ namespace Yohash.React
       buildProps(state);
       oldProps = props.Copy as T;
       InitializeComponent();
+      // add a post-initialize update to extract any child elements
+      updateComponentAndChildren();
     }
 
     internal void onStoreUpdate(State oldState, State state)
