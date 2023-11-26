@@ -76,7 +76,7 @@ public class ComponentViewer : EditorWindow
   {
     components = FindObjectsOfType<GameObject>()
       .Where(go => go.GetComponent<IComponent>() != null)
-      .Select(go => go.GetComponent<IComponent>())
+      .SelectMany(go => go.GetComponents<IComponent>())
       .ToList();
 
     titles = new string[components.Count];
