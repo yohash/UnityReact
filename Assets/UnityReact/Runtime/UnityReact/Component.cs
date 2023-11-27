@@ -109,7 +109,7 @@ namespace Yohash.React
 
     internal async void updateChildren(IEnumerable<Element> elements)
     {
-      // TODO - this is a hack to prevent children from updating we're awaitin
+      // TODO - this is a hack to prevent children from updating while we're awaiting
       //        any given mounter to finish.
       //        If we keep this approach, replace the Task.Yield() with a
       //        prop Unity Async tool
