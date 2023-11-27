@@ -112,7 +112,7 @@ public partial class StateViewer : EditorWindow
       return;
     }
 
-    var fields = parent.GetType().GetFields();
+    var fields = parent.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
     foreach (FieldInfo info in fields) {
       var type = info.FieldType;
       var name = info.Name;

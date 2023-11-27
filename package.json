@@ -1,6 +1,6 @@
 {
   "name": "com.yohash.react",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "displayName": "UnityReact",
   "description": "A backend state management system loosely modeled after React",
   "unity": "2019.1",
