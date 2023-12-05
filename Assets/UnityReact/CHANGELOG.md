@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2023-12-05
+
+### Added
+
+- All scripts in the `Samples~/` subfolder now have their own Assembly Definition file and namespace
+
+### Fixed
+
+- Fixed a null-ref in the `StateViewer` tool when a null `IEnumerable` was sent to an internal `count(IEnumerable object)` method
+
 ## [0.3.3] - 2023-11-27
 
 ### Fixed
