@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class TestChildComponent : Component<NoProps>
   {

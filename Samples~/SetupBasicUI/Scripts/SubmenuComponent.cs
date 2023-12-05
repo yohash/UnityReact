@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class SubMenuProps : Props
   {

@@ -1,4 +1,4 @@
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class SubmenuMiddleware : Middleware
   {

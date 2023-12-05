@@ -1,6 +1,6 @@
 using System;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public struct ListObjectData
   {
