@@ -271,7 +271,9 @@ public partial class StateViewer : EditorWindow
 
   private void renderIEnumerable(string title, Type type, IEnumerable enumerable, string key, int nested)
   {
-    var length = count(enumerable);
+    var length = enumerable == null
+      ? 0
+      : count(enumerable);
 
     // create/maintain toggle tracker
     if (!embeddedToggles.ContainsKey(key)) {
@@ -381,7 +383,7 @@ public partial class StateViewer : EditorWindow
         }
       } catch (Exception e) {
         Debug.LogError("Exception while rendering IENumberable: " + e.Message);
-        throw;
+        GUILayout.Box("\tERROR: " + e.GetType(), Styles.ContainerBackground.Value);
       }
     }
     EditorGUILayout.EndVertical();
