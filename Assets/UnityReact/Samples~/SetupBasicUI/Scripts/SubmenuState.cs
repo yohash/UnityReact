@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class SubmenuState : StateContainer
   {

@@ -1,5 +1,5 @@
 {
-	"name": "yohash.react.samples.runtime",
+	"name": "yohash.react.samples.basicui.runtime",
     "rootNamespace": "",
     "references": [
         "yohash.react.runtime"

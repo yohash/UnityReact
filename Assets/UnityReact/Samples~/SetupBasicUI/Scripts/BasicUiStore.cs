@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class BasicUiStore : MonoBehaviour
   {

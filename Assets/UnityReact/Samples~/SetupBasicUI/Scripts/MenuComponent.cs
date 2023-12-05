@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-namespace Yohash.React.Samples
+namespace Yohash.React.Samples.BasicUi
 {
   public class MenuProps : Props
   {
