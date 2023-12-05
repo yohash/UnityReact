@@ -1,23 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Yohash.React;
 
-public class BasicUiStore : MonoBehaviour
+namespace Yohash.React.Samples
 {
-  [SerializeField] private Store store;
-
-
-  void Start()
+  public class BasicUiStore : MonoBehaviour
   {
-    var state = new List<StateContainer>() {
+    [SerializeField] private Store store;
+
+
+    void Start()
+    {
+      var state = new List<StateContainer>() {
       new MenuState(),
       new SubmenuState()
     };
-    var middleware = new List<Middleware>() {
+      var middleware = new List<Middleware>() {
       new SubmenuMiddleware()
     };
 
-    store = new Store(state, middleware);
-    store.Log = true;
+      store = new Store(state, middleware);
+      store.Log = true;
+    }
   }
 }
