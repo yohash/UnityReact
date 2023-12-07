@@ -7,6 +7,7 @@ namespace Yohash.React.Samples.BasicUi
     public Color32 SubmenuColor;
 
     public bool IsOpen;
+    public bool Psychedlic;
 
     public string Subtext;
 
@@ -28,6 +29,10 @@ namespace Yohash.React.Samples.BasicUi
               (byte)Random.Range(0, 255),
               255
             );
+            return true;
+          }
+        case SetPsychedliaAction spsa: {
+            Psychedlic = spsa.Value;
             return true;
           }
         case MenuLockAction _: {

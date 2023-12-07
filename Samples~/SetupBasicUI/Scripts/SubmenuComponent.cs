@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ namespace Yohash.React.Samples.BasicUi
 
     public override List<StateContainer> state =>
       new List<StateContainer>() {
-      Submenu
+        Submenu
       };
 
     public override void SetState(List<StateContainer> containers)
@@ -31,6 +32,7 @@ namespace Yohash.React.Samples.BasicUi
     public Button Close;
     public Button Reset;
     public Button ShowSlider;
+    public Toggle PsychedlicToggle;
 
     public Text Subtext;
 
@@ -45,7 +47,9 @@ namespace Yohash.React.Samples.BasicUi
       Close.onClick.AddListener(() => dispatch(new CloseSubmenuAction()));
       Reset.onClick.AddListener(() => dispatch(new ResetButtonPressedAction()));
       ShowSlider.onClick.AddListener(() => dispatch(new SubMenuShowSliderValueAction()));
-
+      // pre-set the toggle before we setup the event listener
+      PsychedlicToggle.isOn = props.Submenu.Psychedlic;
+      PsychedlicToggle.onValueChanged.AddListener((value) => dispatch(new SetPsychedliaAction() { Value = value }));
       Submenu.SetActive(props.Submenu.IsOpen);
     }
 
@@ -59,7 +63,33 @@ namespace Yohash.React.Samples.BasicUi
         Background.color = props.Submenu.SubmenuColor;
       }
 
+      if (props.Submenu.Psychedlic) {
+        return new List<Element>() {
+          new Element(
+            () => AttachComponent<PsychedeliaComponent>(Submenu.transform),
+            c => DestroyComponent(c),
+            "PsychedlicComponent",
+            new PsychedlicState() {
+              CycleLength = 1.2f,
+              OnColorChange = (color) => Background.color = color
+            }
+          )
+        };
+      }
+
       return new List<Element>();
+    }
+
+    public static async Task<IComponent> AttachComponent<C>(Transform parent)
+      where C : MonoBehaviour, IComponent
+    {
+      var component = parent.gameObject.AddComponent<C>();
+      return component.GetComponent<IComponent>();
+    }
+
+    public static async Task DestroyComponent(IComponent component)
+    {
+      MonoBehaviour.Destroy(component.Object);
     }
   }
 }
