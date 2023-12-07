@@ -27,6 +27,10 @@ namespace Yohash.React.Samples.BasicUi
   {
     public string Text;
   }
+  public struct SetPsychedliaAction : IAction
+  {
+    public bool Value;
+  }
 
   public struct SubMenuShowSliderValueAction : IAction { }
 
