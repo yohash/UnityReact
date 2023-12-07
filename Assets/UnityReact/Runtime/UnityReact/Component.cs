@@ -14,6 +14,7 @@ namespace Yohash.React
     protected T oldProps;
     public abstract T props { get; }
     public Transform Transform => transform;
+    public Object Object => this;
     public void Unmount() => unmount();
 
     // state-tracker bools
