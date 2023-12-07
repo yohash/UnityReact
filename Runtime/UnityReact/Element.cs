@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace Yohash.React
 {
@@ -44,12 +43,4 @@ namespace Yohash.React
       Props = props;
     }
   }
-
-  public interface IComponent
-  {
-    Transform Transform { get; }
-    void UpdateElementWithProps(PropsContainer props);
-    void Unmount();
-  }
 }
-
