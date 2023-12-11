@@ -111,10 +111,10 @@ namespace Yohash.React
     internal async void updateChildren(IEnumerable<Element> elements)
     {
       // TODO - this is a hack to prevent children from updating while we're awaiting
-      //        any given mounter to finish.
+      //        any given child update to finish.
       //        If we keep this approach, replace the Task.Yield() with a
       //        prop Unity Async tool
-      if (isUpdating) { await Task.Yield(); }
+      while (isUpdating) { await Task.Yield(); }
       isUpdating = true;
 
       // check list of elements for
@@ -143,6 +143,11 @@ namespace Yohash.React
         // in order to update the component with props
         var newProps = elements.FirstOrDefault(e => e.Address == child.Address)?.Props;
         if (newProps == null) { continue; }
+        // TODO - if the component is null, we need to wait for it to be mounted
+        //        Is there any way we can more accurately await the mounter? Rather
+        //        than just waiting for a frame? This could result in locked logic too,
+        //        if the mounter fails.
+        while (child.Component == null) { await Task.Yield(); }
         // update the child component, so it can receive the props update
         child.Component.UpdateElementWithProps(newProps);
       }
