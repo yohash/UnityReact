@@ -8,18 +8,20 @@ namespace Yohash.React.Samples.BasicUi
     [SerializeField] private Store store;
 
 
-    void Start()
+    private void Awake()
     {
       var state = new List<StateContainer>() {
-      new MenuState(),
-      new SubmenuState()
-    };
+        new MenuState(),
+        new SubmenuState()
+      };
+
       var middleware = new List<Middleware>() {
-      new SubmenuMiddleware()
-    };
+        new SubmenuMiddleware()
+      };
 
       store = new Store(state, middleware);
       store.Log = true;
     }
   }
+
 }

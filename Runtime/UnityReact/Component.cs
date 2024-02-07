@@ -8,7 +8,6 @@ namespace Yohash.React
   public abstract class Component<T> : MonoBehaviour, IComponent
     where T : Props
   {
-    private Queue<IAction> _queue = new Queue<IAction>();
     private HashSet<Element> children = new HashSet<Element>();
 
     protected T oldProps;
@@ -17,28 +16,20 @@ namespace Yohash.React
     public Object Object => this;
     public void Unmount() => unmount();
 
-    // state-tracker bools
-    private bool initialized = false;
     private bool isUpdating = false;
 
-    private void Update()
+    private void Start()
     {
-      if (!initialized) {
-        subscribe();
-      }
+      subscribe();
     }
 
     private void subscribe()
     {
-      if (Store.Instance == null) { return; }
-      initialized = true;
+      if (Store.Instance == null) {
+        throw new ComponentCreatedWithNoStore($"Component {name} was created with no Store instance.");
+      }
 
       Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
-
-      while (_queue.Count > 0) {
-        IAction waiting = _queue.Dequeue();
-        dispatch(waiting);
-      }
     }
 
     private void OnDestroy()
@@ -63,10 +54,6 @@ namespace Yohash.React
 
     protected void dispatch(IAction action)
     {
-      if (!initialized) {
-        _queue.Enqueue(action);
-        return;
-      }
       Store.Instance.Dispatch(action);
     }
 
@@ -174,4 +161,9 @@ namespace Yohash.React
     public abstract void InitializeComponent();
     public abstract IEnumerable<Element> UpdateComponent();
   }
+}
+
+public class ComponentCreatedWithNoStore : System.Exception
+{
+  public ComponentCreatedWithNoStore(string message) : base(message) { }
 }
