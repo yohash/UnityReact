@@ -6,7 +6,7 @@ namespace Yohash.React
   public class Element
   {
     // provide a unique address
-    public string Address;
+    public string Key;
     private Func<Task<IComponent>> _mount;
     public Task<IComponent> Mount()
     {
@@ -33,13 +33,13 @@ namespace Yohash.React
     public Element(
       Func<Task<IComponent>> mounter,
       Func<IComponent, Task> unmounter,
-      string address,
+      string key,
       PropsContainer props
     )
     {
       _mount = mounter;
       _unmount = unmounter;
-      Address = address;
+      Key = key;
       Props = props;
     }
   }

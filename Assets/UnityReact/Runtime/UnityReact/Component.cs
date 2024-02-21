@@ -106,7 +106,7 @@ namespace Yohash.React
 
       // check list of elements for
       // (1) new elements - to mount & add
-      var newElements = elements.Where(e => !children.Any(c => c.Address == e.Address)).ToList();
+      var newElements = elements.Where(e => !children.Any(c => c.Key == e.Key)).ToList();
       foreach (var element in newElements) {
         // immediately add the child element so it is tracked while
         // the mounter is generating the component
@@ -117,7 +117,7 @@ namespace Yohash.React
       }
 
       // (2) missing elements - to destroy & remove
-      var missing = children.Where(c => !elements.Any(e => e.Address == c.Address)).ToList();
+      var missing = children.Where(c => !elements.Any(e => e.Key == c.Key)).ToList();
       foreach (var child in missing) {
         // immediately remove the child from the tracked list before unmounting
         children.Remove(child);
@@ -128,7 +128,7 @@ namespace Yohash.React
       foreach (var child in children) {
         // place props in a list of state containers, then set the local props state
         // in order to update the component with props
-        var newProps = elements.FirstOrDefault(e => e.Address == child.Address)?.Props;
+        var newProps = elements.FirstOrDefault(e => e.Key == child.Key)?.Props;
         if (newProps == null) { continue; }
         // TODO - if the component is null, we need to wait for it to be mounted
         //        Is there any way we can more accurately await the mounter? Rather
