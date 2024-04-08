@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.10] - 2024-04-08
+
+### Changed
+
+- Force the `Component<T>` generic type `T` to also implement `new()`, allowing us to store and instantiate the props in a `private T _props` variable. The props are instantiated with `new T()`. This removes some small amount of required boilerplate from component implementations.
+- Removed local `Props` generation and storage in all associated demo scenes.
+
 ## [0.3.9] - 2024-02-23
 
 ### Changed

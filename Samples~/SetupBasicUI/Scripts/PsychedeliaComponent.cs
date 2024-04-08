@@ -31,9 +31,6 @@ namespace Yohash.React.Samples.BasicUi
 
   public class PsychedeliaComponent : Yohash.React.Component<PsychedlicProps>
   {
-    private PsychedlicProps _props = new PsychedlicProps();
-    public override PsychedlicProps props => _props;
-
     private Color fromColor = Color.black;
     private Color toColor = Color.white;
     private float timer;

@@ -6,12 +6,14 @@ using UnityEngine;
 namespace Yohash.React
 {
   public abstract class Component<T> : MonoBehaviour, IComponent
-    where T : Props
+    where T : Props, new()
   {
     private HashSet<Element> children = new HashSet<Element>();
 
     protected T oldProps;
-    public abstract T props { get; }
+    protected T props { get => _props; }
+    private T _props = new T();
+
     public Transform Transform => transform;
     public Object Object => this;
     public void Unmount() => unmount();

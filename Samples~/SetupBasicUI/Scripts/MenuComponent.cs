@@ -12,7 +12,7 @@ namespace Yohash.React.Samples.BasicUi
 
     public override List<StateContainer> state =>
       new List<StateContainer>() {
-      Menu
+        Menu
       };
 
     public override void SetState(List<StateContainer> containers)
@@ -44,9 +44,6 @@ namespace Yohash.React.Samples.BasicUi
     public Button RemoveListObject;
 
     public Slider ValueSlider;
-
-    public override MenuProps props => _props;
-    private MenuProps _props = new MenuProps() { };
 
     public override void InitializeComponent()
     {

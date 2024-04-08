@@ -17,7 +17,7 @@ namespace Yohash.React.Samples.BasicUi
 
     public override List<StateContainer> state =>
       new List<StateContainer>() {
-      ListObject
+        ListObject
       };
 
     public override void SetState(List<StateContainer> containers)
@@ -32,9 +32,6 @@ namespace Yohash.React.Samples.BasicUi
 
   public class ListObjectComponent : Yohash.React.Component<ListProps>
   {
-    private ListProps _props = new ListProps();
-    public override ListProps props => _props;
-
     public Button Increment;
     public Button Decrement;
 
