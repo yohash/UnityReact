@@ -38,9 +38,6 @@ namespace Yohash.React.Samples.BasicUi
 
     public Image Background;
 
-    public override SubMenuProps props => _props;
-    private SubMenuProps _props = new SubMenuProps() { };
-
     public override void InitializeComponent()
     {
       ChangeColorButton.onClick.AddListener(() => dispatch(new CycleSubmenuColorAction()));
