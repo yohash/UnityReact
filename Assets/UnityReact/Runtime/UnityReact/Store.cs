@@ -86,7 +86,7 @@ namespace Yohash.React
       state.Reduce(action);
 
       // update subscribed components
-      OnStoreUpdate(oldState, state);
+      OnStoreUpdate?.Invoke(oldState, state);
 
       processing = false;
       if (actionQueue.Count > 0) {
