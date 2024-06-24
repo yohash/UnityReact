@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.12] - 2024-06-25
+
+### Fixed
+
+- Fixed a potential null-reference in the Store when OnStoreUpdate is null
+- Fixed a potential null-reference in the Store in ActionQueue
+
 ## [0.3.11] - 2024-04-23
 
 ### Fixed
