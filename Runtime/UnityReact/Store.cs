@@ -33,7 +33,7 @@ namespace Yohash.React
     // a public flag and local vars for queueing actions
     public bool ActionQueueing = true;
     private bool processing = false;
-    private Queue<IAction> actionQueue;
+    private Queue<IAction> actionQueue = new Queue<IAction>();
 
     public Store(
       List<StateContainer> containers,
@@ -51,8 +51,6 @@ namespace Yohash.React
       for (int i = 0; i < middlewares.Count; i++) {
         middleware.Add(middlewares[i]);
       }
-
-      actionQueue = new Queue<IAction>();
     }
 
     public void Subscribe(UpdateDelegate update, System.Action<State> initialize)
