@@ -22,7 +22,6 @@ namespace Yohash.React
 
     public bool Log = false;
 
-    public State State => state;
     [SerializeField] private State state;
 
     private List<Middleware> middleware;
@@ -35,17 +34,10 @@ namespace Yohash.React
     private bool processing = false;
     private Queue<IAction> actionQueue = new Queue<IAction>();
 
-    public Store(
-      List<StateContainer> containers,
-      List<Middleware> middlewares
-    )
+    public Store(State state, List<Middleware> middlewares)
     {
       _instance = this;
-
-      state = new State();
-      for (int i = 0; i < containers.Count; i++) {
-        state.AddState(containers[i]);
-      }
+      this.state = state;
 
       middleware = new List<Middleware>();
       for (int i = 0; i < middlewares.Count; i++) {
@@ -82,7 +74,7 @@ namespace Yohash.React
       }
 
       // copy old state and reduce
-      var oldState = state.Copy;
+      var oldState = state.Clone();
       state.Reduce(action);
 
       // update subscribed components

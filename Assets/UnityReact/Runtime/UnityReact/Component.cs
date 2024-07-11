@@ -10,9 +10,9 @@ namespace Yohash.React
   {
     private HashSet<Element> children = new HashSet<Element>();
 
-    protected T oldProps;
+    protected T oldProps = new();
     protected T props { get => _props; }
-    private T _props = new T();
+    private T _props = new();
 
     public Transform Transform => transform;
     public Object Object => this;
@@ -63,7 +63,7 @@ namespace Yohash.React
     {
       // first we build props from state, then assign
       // old props to the same set of props for initialization
-      buildProps(state);
+      props.BuildProps(state);
       oldProps = props.Copy as T;
       InitializeComponent();
       // add a post-initialize update to extract any child elements
@@ -73,8 +73,9 @@ namespace Yohash.React
     internal void onStoreUpdate(State oldState, State state)
     {
       oldProps = props.Copy as T;
-      buildProps(state);
-      if (propsDidUpdate()) {
+      props.BuildProps(state);
+
+      if (props.DidUpdate()) {
         updateComponentAndChildren();
       }
     }
@@ -83,18 +84,6 @@ namespace Yohash.React
     {
       var elements = UpdateComponent();
       updateChildren(elements);
-    }
-
-    internal void buildProps(State state)
-    {
-      var stateContainers = new List<StateContainer>();
-
-      foreach (var container in state.Containers) {
-        if (props.state.Any(t => container.GetType().Equals(t.GetType()))) {
-          stateContainers.Add(container);
-        }
-      }
-      props.SetState(stateContainers);
     }
 
     internal async void updateChildren(IEnumerable<Element> elements)
@@ -147,17 +136,12 @@ namespace Yohash.React
     public void UpdateElementWithProps(PropsContainer propsContainer)
     {
       oldProps = props.Copy as T;
-      props.SetState(new List<StateContainer>() { propsContainer });
+      props.BuildElement(propsContainer);
       // update the child component, so it can receive the props update
       // using the recursive method so elements can mount elements in turn
       // TBD - can we add a props-did-update check here?
       // if (propsDidUpdate(oldProps, props)) {
       updateComponentAndChildren();
-    }
-
-    internal bool propsDidUpdate()
-    {
-      return props.state.Any(s => s.IsDirty);
     }
 
     public abstract void InitializeComponent();
