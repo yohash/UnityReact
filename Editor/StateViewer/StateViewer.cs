@@ -21,7 +21,7 @@ namespace Yohash.React.Editor
 
     private Dictionary<string, managedToggle> embeddedToggles = new Dictionary<string, managedToggle>();
 
-    [MenuItem("Yohash/React/State Viewer", false, 800)]
+    [MenuItem("Yohash/React/State Viewer", false, 100)]
     private static void Init()
     {
       window = (StateViewer)GetWindow(typeof(StateViewer));

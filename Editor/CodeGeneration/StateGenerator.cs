@@ -10,13 +10,12 @@ namespace Yohash.React.Editor
 {
   public static class StateGenerator
   {
-    [MenuItem("Yohash/React/Generate MainState")]
+    [MenuItem("Yohash/React/Generate MainState", false, 301)]
     public static void GenerateMainState()
     {
       var stateContainers = GetDerivedTypesFromAllAssemblies();
       GenerateMainStateFiles(stateContainers);
       AssetDatabase.Refresh();
-      Debug.Log("Done generating state");
     }
 
     private static IEnumerable<Type> GetDerivedTypesFromAllAssemblies()
@@ -44,8 +43,9 @@ namespace Yohash.React.Editor
 
       foreach (var namespaceGroup in namespaceGroups) {
         var code = GenerateMainStateCode(namespaceGroup.Key, namespaceGroup);
-        var path = $"Assets/_Generated/{namespaceGroup.Key}";
-        var filename = "MainState.cs";
+        var name = namespaceGroup.Key.Split('.').Last();
+        var path = $"Assets/_Generated/{name}";
+        var filename = $"{name}State.cs";
         if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
         var fullpath = Path.Combine(path, filename);
@@ -62,11 +62,13 @@ namespace Yohash.React.Editor
 
     private static string GenerateMainStateCode(string namespaceName, IEnumerable<Type> stateContainers)
     {
+      var name = namespaceName.Split('.').Last();
+
       var sb = new StringBuilder();
 
       sb.AppendLine($"namespace {namespaceName}");
       sb.AppendLine("{");
-      sb.AppendLine("  public class MainState");
+      sb.AppendLine($"  public class {name}State : State");
       sb.AppendLine("  {");
 
       // **** Add fields
@@ -76,7 +78,7 @@ namespace Yohash.React.Editor
 
       // **** Add Reduce method
       sb.AppendLine();
-      sb.AppendLine("    public void Reduce(IAction action)");
+      sb.AppendLine("    public override void Reduce(IAction action)");
       sb.AppendLine("    {");
       foreach (var type in stateContainers) {
         sb.AppendLine($"      {type.Name}.Reduce(action);");
@@ -85,9 +87,9 @@ namespace Yohash.React.Editor
 
       // **** Add Clone method
       sb.AppendLine();
-      sb.AppendLine("    public MainState Clone()");
+      sb.AppendLine("    public override State Clone()");
       sb.AppendLine("    {");
-      sb.AppendLine("      var newState = new MainState();");
+      sb.AppendLine($"      var newState = new {name}State();");
       foreach (var type in stateContainers) {
         sb.AppendLine($"      newState.{type.Name} = {type.Name}.Clone() as {type.Name};");
       }

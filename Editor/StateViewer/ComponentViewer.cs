@@ -29,7 +29,7 @@ namespace Yohash.React.Editor
       }
     }
 
-    [MenuItem("Yohash/React/Component Viewer", false, 810)]
+    [MenuItem("Yohash/React/Component Viewer", false, 101)]
     private static void Init()
     {
       window = (ComponentViewer)GetWindow(typeof(ComponentViewer));
