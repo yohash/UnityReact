@@ -5,10 +5,9 @@
   {
     public bool IsDirty = false;
 
-    public StateContainer Copy {
-      get {
-        return MemberwiseClone() as StateContainer;
-      }
+    public StateContainer Clone()
+    {
+      return MemberwiseClone() as StateContainer;
     }
 
     public void Reduce(IAction action)

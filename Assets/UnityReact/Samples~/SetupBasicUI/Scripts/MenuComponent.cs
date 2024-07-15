@@ -6,23 +6,9 @@ using System.Threading.Tasks;
 
 namespace Yohash.React.Samples.BasicUi
 {
-  public class MenuProps : Props
+  public partial class MenuProps : Props
   {
-    public MenuState Menu = new MenuState();
-
-    public override List<StateContainer> state =>
-      new List<StateContainer>() {
-        Menu
-      };
-
-    public override void SetState(List<StateContainer> containers)
-    {
-      foreach (var container in containers) {
-        if (container is MenuState) {
-          Menu = container.Copy as MenuState;
-        }
-      }
-    }
+    public MenuState Menu;
   }
 
   public class MenuComponent : Yohash.React.Component<MenuProps>
@@ -61,14 +47,13 @@ namespace Yohash.React.Samples.BasicUi
 
       AddListObject.onClick.AddListener(() => dispatch(new ListAddObject()));
       RemoveListObject.onClick.AddListener(() => dispatch(new ListRemoveObject()));
-
+      dispatch(new MenuLockAction());
       updateView();
     }
 
     public override IEnumerable<Element> UpdateComponent()
     {
       updateView();
-
       return props.Menu.ListValues
         .Select((dat, index) => new Element(
             mountListItem,
@@ -83,7 +68,7 @@ namespace Yohash.React.Samples.BasicUi
     }
 
     /// <summary>
-    /// Thought this mount method is async, we are performing
+    /// Though this mount method is async, we are performing
     /// a simple, sychronous prefab instantiation.
     /// A better implementation would be to load the prefab from
     /// file asynchronously, using for example, the AssetBundle API,

@@ -1,18 +1,13 @@
-using System.Collections.Generic;
-
 namespace Yohash.React
 {
-  public class NoProps : Props
-  {
-    public override List<StateContainer> state => _state;
-    private List<StateContainer> _state = new List<StateContainer>();
-    public override void SetState(List<StateContainer> containers) { }
-  }
+  public class NoProps : Props { }
 
   public abstract class Props
   {
-    public abstract List<StateContainer> state { get; }
-    public abstract void SetState(List<StateContainer> containers);
     public Props Copy { get { return MemberwiseClone() as Props; } }
+    // these methods are defined by code generation
+    public virtual void BuildProps(State state) { }
+    public virtual bool DidUpdate() { return false; }
+    public virtual void BuildElement(PropsContainer propsContainer) { }
   };
 }

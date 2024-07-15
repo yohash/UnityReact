@@ -4,7 +4,7 @@ namespace Yohash.React.Samples.BasicUi
 {
   public class SubmenuState : StateContainer
   {
-    public Color32 SubmenuColor;
+    public Color32 SubmenuColor = Color.gray;
 
     public bool IsOpen;
     public bool Psychedlic;
@@ -31,7 +31,7 @@ namespace Yohash.React.Samples.BasicUi
             );
             return true;
           }
-        case SetPsychedliaAction spsa: {
+        case SetPsychedeliaAction spsa: {
             Psychedlic = spsa.Value;
             return true;
           }
