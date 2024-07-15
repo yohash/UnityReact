@@ -10,23 +10,9 @@ namespace Yohash.React.Samples.BasicUi
     public Action<Color> OnColorChange;
   }
 
-  public class PsychedlicProps : Props
+  public partial class PsychedlicProps : Props
   {
-    public PsychedlicState Psychedlic = new PsychedlicState();
-
-    public override List<StateContainer> state =>
-      new List<StateContainer>() {
-        Psychedlic
-      };
-
-    public override void SetState(List<StateContainer> containers)
-    {
-      foreach (var container in containers) {
-        if (container is PsychedlicState) {
-          Psychedlic = container.Copy as PsychedlicState;
-        }
-      }
-    }
+    public PsychedlicState Psychedlic;
   }
 
   public class PsychedeliaComponent : Yohash.React.Component<PsychedlicProps>

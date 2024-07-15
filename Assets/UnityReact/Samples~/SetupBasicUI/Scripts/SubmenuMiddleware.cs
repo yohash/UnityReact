@@ -1,9 +1,12 @@
+using System;
+
 namespace Yohash.React.Samples.BasicUi
 {
   public class SubmenuMiddleware : Middleware
   {
-    public override IAction HandleAction(State state, IAction action, System.Action<IAction> dispatch)
+    public override IAction HandleAction(State state, IAction action, Action<IAction> dispatch)
     {
+      var menu = state as BasicUiState;
       switch (action) {
         case ResetButtonPressedAction rbpa:
           // dispatch the reset action as a "PressButtonAction"
@@ -16,9 +19,7 @@ namespace Yohash.React.Samples.BasicUi
 
         case SubMenuShowSliderValueAction sssva:
           // this action grabs state to set the subtext value
-          if (state.TryGetState(out MenuState menu)) {
-            dispatch(new SetSubTextAction() { Text = menu.SliderValue.ToString() });
-          }
+          dispatch(new SetSubTextAction() { Text = menu.MenuState.SliderValue.ToString() });
           break;
       }
 

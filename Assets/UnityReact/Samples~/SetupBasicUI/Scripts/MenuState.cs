@@ -17,6 +17,8 @@ namespace Yohash.React.Samples.BasicUi
 
     public bool Locked = false;
 
+    public int lockCount = 0;
+
     public ListObjectData[] ListValues = new ListObjectData[0];
 
     protected override bool reduce(IAction action)
@@ -49,6 +51,7 @@ namespace Yohash.React.Samples.BasicUi
           }
         case MenuLockAction _: {
             Locked = !Locked;
+            lockCount++;
             return true;
           }
       }
