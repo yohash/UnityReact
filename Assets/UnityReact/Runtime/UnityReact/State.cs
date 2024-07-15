@@ -1,15 +1,10 @@
 ﻿namespace Yohash.React
 {
   [System.Serializable]
-  public class State
+  public abstract class State
   {
     public State() { }
-    public virtual State Clone()
-    {
-      var copy = new State();
-      return copy;
-    }
-
-    public virtual void Reduce(IAction action) { }
+    public abstract State Clone();
+    public abstract void Reduce(IAction action);
   }
 }

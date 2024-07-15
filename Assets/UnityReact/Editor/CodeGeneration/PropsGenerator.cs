@@ -11,30 +11,56 @@ namespace Yohash.React.Editor
 {
   public static class PropsGenerator
   {
-    [MenuItem("Yohash/React/Generate Props Methods")]
+    [MenuItem("Yohash/React/Generate Props Methods", false, 302)]
     public static void GeneratePropsMethods()
     {
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-      foreach (var assembly in assemblies) {
-        var propsTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Props))).ToList();
-        if (propsTypes.Count > 0) {
-          GeneratePropsMethods(assembly, propsTypes);
-        }
-      }
+      var propsTypes = GeneratePropsMethodsAssemblies();
+      GeneratePropsMethodsFiles(propsTypes);
       AssetDatabase.Refresh();
     }
 
-    private static void GeneratePropsMethods(Assembly assembly, List<Type> propsTypes)
+    private static IEnumerable<Type> GeneratePropsMethodsAssemblies()
     {
-      var mainStateType = assembly.GetTypes()
-        .FirstOrDefault(t => t.Name == "MainState");
+      var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+      var derivedTypes = new List<Type>();
 
-      if (mainStateType == null) {
-        Debug.LogWarning($"MainState not found in assembly: {assembly.FullName}");
-        return;
+      foreach (var assembly in allAssemblies) {
+        var propsTypes = assembly.GetTypes()
+          .Where(t => t.IsSubclassOf(typeof(Props)))
+          .ToList();
+        derivedTypes.AddRange(propsTypes);
       }
 
-      var namespaceName = mainStateType.Namespace;
+      return derivedTypes;
+    }
+
+    private static void GeneratePropsMethodsFiles(IEnumerable<Type> propsTypes)
+    {
+      var namespaceGroups = propsTypes.GroupBy(t => t.Namespace);
+
+      foreach (var namespaceGroup in namespaceGroups) {
+        var code = GeneratePropsMethodsCode(namespaceGroup.Key, namespaceGroup);
+        var name = namespaceGroup.Key.Split('.').Last();
+        var path = $"Assets/_Generated/{name}";
+        var filename = $"{name}PropsMethods.cs";
+        if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+
+        var fullpath = Path.Combine(path, filename);
+
+        using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write)) {
+          using (var writer = new StreamWriter(stream)) {
+            writer.Write(code);
+          }
+        }
+
+        Debug.Log("Wrote file " + fullpath);
+      }
+    }
+
+    private static string GeneratePropsMethodsCode(string namespaceName, IEnumerable<Type> propsTypes)
+    {
+      var name = namespaceName.Split('.').Last();
+
       var sb = new StringBuilder();
       sb.AppendLine($"namespace {namespaceName}");
       sb.AppendLine("{");
@@ -73,12 +99,12 @@ namespace Yohash.React.Editor
         if (stateContainerFields.Count > 0) {
           sb.AppendLine($"    public override void BuildProps(State state)");
           sb.AppendLine("    {");
-          sb.AppendLine("      var mainState = state as MainState;");
+          sb.AppendLine($"      var _state = state as {name}State;");
 
           foreach (var field in stateContainerFields) {
             var fieldName = field.Name;
             var fieldType = field.FieldType.Name;
-            sb.AppendLine($"      {fieldName} = mainState.{fieldType};");
+            sb.AppendLine($"      {fieldName} = _state.{fieldType};");
           }
           sb.AppendLine("    }");
           sb.AppendLine();
@@ -122,19 +148,7 @@ namespace Yohash.React.Editor
 
       sb.AppendLine("}");
 
-      var path = $"Assets/_Generated/{namespaceName}/";
-      var filename = $"PropsMethods.cs";
-      if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-
-      var fullpath = Path.Combine(path, filename);
-
-      using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write)) {
-        using (var writer = new StreamWriter(stream)) {
-          writer.Write(sb.ToString());
-        }
-      }
-
-      AssetDatabase.Refresh();
+      return sb.ToString();
     }
   }
 }
