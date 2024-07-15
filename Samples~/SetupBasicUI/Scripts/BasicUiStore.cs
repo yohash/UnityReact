@@ -10,18 +10,12 @@ namespace Yohash.React.Samples.BasicUi
 
     private void Awake()
     {
-      var state = new List<StateContainer>() {
-        new MenuState(),
-        new SubmenuState()
-      };
-
       var middleware = new List<Middleware>() {
         new SubmenuMiddleware()
       };
 
-      store = new Store(state, middleware);
+      store = new Store(new BasicUiState(), middleware);
       store.Log = true;
     }
   }
-
 }

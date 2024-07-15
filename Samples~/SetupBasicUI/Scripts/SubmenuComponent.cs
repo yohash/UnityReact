@@ -5,23 +5,9 @@ using UnityEngine.UI;
 
 namespace Yohash.React.Samples.BasicUi
 {
-  public class SubMenuProps : Props
+  public partial class SubMenuProps : Props
   {
-    public SubmenuState Submenu = new SubmenuState();
-
-    public override List<StateContainer> state =>
-      new List<StateContainer>() {
-        Submenu
-      };
-
-    public override void SetState(List<StateContainer> containers)
-    {
-      foreach (var container in containers) {
-        if (container is SubmenuState) {
-          Submenu = container.Copy as SubmenuState;
-        }
-      }
-    }
+    public SubmenuState Submenu;
   }
 
   public class SubmenuComponent : Yohash.React.Component<SubMenuProps>
@@ -32,7 +18,7 @@ namespace Yohash.React.Samples.BasicUi
     public Button Close;
     public Button Reset;
     public Button ShowSlider;
-    public Toggle PsychedlicToggle;
+    public Toggle PsychedelicToggle;
 
     public Text Subtext;
 
@@ -45,8 +31,8 @@ namespace Yohash.React.Samples.BasicUi
       Reset.onClick.AddListener(() => dispatch(new ResetButtonPressedAction()));
       ShowSlider.onClick.AddListener(() => dispatch(new SubMenuShowSliderValueAction()));
       // pre-set the toggle before we setup the event listener
-      PsychedlicToggle.isOn = props.Submenu.Psychedlic;
-      PsychedlicToggle.onValueChanged.AddListener((value) => dispatch(new SetPsychedliaAction() { Value = value }));
+      PsychedelicToggle.isOn = props.Submenu.Psychedlic;
+      PsychedelicToggle.onValueChanged.AddListener((value) => dispatch(new SetPsychedeliaAction() { Value = value }));
       Submenu.SetActive(props.Submenu.IsOpen);
     }
 
@@ -56,9 +42,7 @@ namespace Yohash.React.Samples.BasicUi
 
       Subtext.text = props.Submenu.Subtext;
 
-      if (!oldProps.Submenu.SubmenuColor.Equals(props.Submenu.SubmenuColor)) {
-        Background.color = props.Submenu.SubmenuColor;
-      }
+      Background.color = props.Submenu.SubmenuColor;
 
       if (props.Submenu.Psychedlic) {
         return new List<Element>() {

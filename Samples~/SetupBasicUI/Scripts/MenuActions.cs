@@ -27,7 +27,7 @@ namespace Yohash.React.Samples.BasicUi
   {
     public string Text;
   }
-  public struct SetPsychedliaAction : IAction
+  public struct SetPsychedeliaAction : IAction
   {
     public bool Value;
   }

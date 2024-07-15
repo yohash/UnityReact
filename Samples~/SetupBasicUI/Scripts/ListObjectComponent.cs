@@ -11,23 +11,9 @@ namespace Yohash.React.Samples.BasicUi
     public int Index;
   }
 
-  public class ListProps : Props
+  public partial class ListProps : Props
   {
-    public ListObjectProps ListObject = new ListObjectProps();
-
-    public override List<StateContainer> state =>
-      new List<StateContainer>() {
-        ListObject
-      };
-
-    public override void SetState(List<StateContainer> containers)
-    {
-      foreach (var container in containers) {
-        if (container is ListObjectProps) {
-          ListObject = container.Copy as ListObjectProps;
-        }
-      }
-    }
+    public ListObjectProps ListObject;
   }
 
   public class ListObjectComponent : Yohash.React.Component<ListProps>

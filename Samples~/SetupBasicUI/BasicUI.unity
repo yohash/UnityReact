@@ -4013,7 +4013,7 @@ MonoBehaviour:
   Close: {fileID: 1236428931}
   Reset: {fileID: 514943797}
   ShowSlider: {fileID: 1238630132}
-  PsychedlicToggle: {fileID: 334562782}
+  PsychedelicToggle: {fileID: 334562782}
   Subtext: {fileID: 1720210794}
   Background: {fileID: 1237883201}
 --- !u!1 &1764329878
