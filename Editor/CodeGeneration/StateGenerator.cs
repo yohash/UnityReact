@@ -43,7 +43,7 @@ namespace Yohash.React.Editor
 
       foreach (var namespaceGroup in namespaceGroups) {
         var code = GenerateMainStateCode(namespaceGroup.Key, namespaceGroup);
-        var name = namespaceGroup.Key.Split('.').Last();
+        var name = namespaceGroup.Key?.Split('.').Last() ?? Application.productName;
         var path = $"Assets/_Generated/{name}";
         var filename = $"{name}State.cs";
         if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
@@ -62,42 +62,51 @@ namespace Yohash.React.Editor
 
     private static string GenerateMainStateCode(string namespaceName, IEnumerable<Type> stateContainers)
     {
-      var name = namespaceName.Split('.').Last();
+      var name = namespaceName?.Split('.').Last() ?? Application.productName;
 
       var sb = new StringBuilder();
+      sb.AppendLine("using Yohash.React;");
 
-      sb.AppendLine($"namespace {namespaceName}");
-      sb.AppendLine("{");
-      sb.AppendLine($"  public class {name}State : State");
-      sb.AppendLine("  {");
+      bool noNamespace = namespaceName == null;
+
+      var b = noNamespace ? "" : "  ";
+      if (!noNamespace) {
+        sb.AppendLine($"namespace {namespaceName}");
+        sb.AppendLine("{");
+      }
+      sb.AppendLine($"{b}public class {name}State : State");
+      sb.AppendLine($"{b}{{");
 
       // **** Add fields
       foreach (var type in stateContainers) {
-        sb.AppendLine($"    public {type.Name} {type.Name} = new {type.Name}();");
+        sb.AppendLine($"{b}  public {type.Name} {type.Name} = new {type.Name}();");
       }
 
       // **** Add Reduce method
       sb.AppendLine();
-      sb.AppendLine("    public override void Reduce(IAction action)");
-      sb.AppendLine("    {");
+      sb.AppendLine($"{b}  public override void Reduce(IAction action)");
+      sb.AppendLine($"{b}  {{");
       foreach (var type in stateContainers) {
-        sb.AppendLine($"      {type.Name}.Reduce(action);");
+        sb.AppendLine($"{b}    {type.Name}.Reduce(action);");
       }
-      sb.AppendLine("    }");
+      sb.AppendLine($"{b}  }}");
 
       // **** Add Clone method
       sb.AppendLine();
-      sb.AppendLine("    public override State Clone()");
-      sb.AppendLine("    {");
-      sb.AppendLine($"      var newState = new {name}State();");
+      sb.AppendLine($"{b}  public override State Clone()");
+      sb.AppendLine($"{b}  {{");
+      sb.AppendLine($"{b}    var newState = new {name}State();");
       foreach (var type in stateContainers) {
-        sb.AppendLine($"      newState.{type.Name} = {type.Name}.Clone() as {type.Name};");
+        sb.AppendLine($"{b}    newState.{type.Name} = {type.Name}.Clone() as {type.Name};");
       }
-      sb.AppendLine("      return newState;");
-      sb.AppendLine("    }");
+      sb.AppendLine($"{b}    return newState;");
+      sb.AppendLine($"{b}  }}");
 
-      sb.AppendLine("  }");
-      sb.AppendLine("}");
+      sb.AppendLine($"{b}}}");
+
+      if (!noNamespace) {
+        sb.AppendLine("}");
+      }
 
       return sb.ToString();
     }
