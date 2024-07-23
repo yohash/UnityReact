@@ -64,7 +64,7 @@ namespace Yohash.React
       // first we build props from state, then assign
       // old props to the same set of props for initialization
       props.BuildProps(state);
-      oldProps = props.Copy as T;
+      oldProps = props.Clone() as T;
       InitializeComponent();
       // add a post-initialize update to extract any child elements
       updateComponentAndChildren();
@@ -72,10 +72,9 @@ namespace Yohash.React
 
     internal void onStoreUpdate(State oldState, State state)
     {
-      oldProps = props.Copy as T;
-      props.BuildProps(state);
-
-      if (props.DidUpdate()) {
+      if (props.DidUpdate(state)) {
+        oldProps = props.Clone() as T;
+        props.BuildProps(state);
         updateComponentAndChildren();
       }
     }
@@ -135,7 +134,10 @@ namespace Yohash.React
 
     public void UpdateElementWithProps(PropsContainer propsContainer)
     {
-      oldProps = props.Copy as T;
+      // TODO - is an "Element did change" style of method here worth while?
+      //        Can we only update elements when needed, or can children-of-children
+      //        miss out on updates if this is done?
+      oldProps = props.Clone() as T;
       props.BuildElement(propsContainer);
       // update the child component, so it can receive the props update
       // using the recursive method so elements can mount elements in turn

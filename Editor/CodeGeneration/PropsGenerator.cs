@@ -112,25 +112,27 @@ namespace Yohash.React.Editor
           foreach (var field in stateContainerFields) {
             var fieldName = field.Name;
             var fieldType = field.FieldType.Name;
-            sb.AppendLine($"{b}    {fieldName} = _state.{fieldType};");
+            sb.AppendLine($"{b}    {fieldName} = _state.{fieldType}.Clone() as {fieldType};");
           }
           sb.AppendLine($"{b}  }}");
           sb.AppendLine();
         }
 
         // **** Generate DidUpdate method
-        sb.AppendLine($"{b}  public override bool DidUpdate()");
+        sb.AppendLine($"{b}  public override bool DidUpdate(State state)");
         sb.AppendLine($"{b}  {{");
 
         if (stateContainerFields.Count > 1) {
-          sb.AppendLine($"{b}    return {stateContainerFields[0].Name}.IsDirty ||");
+          sb.AppendLine($"{b}    var _state = state as {name}State;");
+          sb.AppendLine($"{b}    return _state.{stateContainerFields[0].FieldType.Name}.IsDirty ||");
           for (var i = 1; i < stateContainerFields.Count; i++) {
-            var fieldName = stateContainerFields[i].Name;
-            var line = $"{b}      {fieldName}.IsDirty" + (i == stateContainerFields.Count - 1 ? ";" : " ||");
+            var fieldType = stateContainerFields[i].FieldType.Name;
+            var line = $"{b}      _state.{fieldType}.IsDirty" + (i == stateContainerFields.Count - 1 ? ";" : " ||");
             sb.AppendLine(line);
           }
         } else if (stateContainerFields.Count == 1) {
-          sb.AppendLine($"{b}    return {stateContainerFields[0].Name}.IsDirty;");
+          sb.AppendLine($"{b}    var _state = state as {name}State;");
+          sb.AppendLine($"{b}    return _state.{stateContainerFields[0].FieldType.Name}.IsDirty;");
         } else if (stateContainerFields.Count == 0) {
           sb.AppendLine($"{b}    return true;");
         }
