@@ -37,8 +37,11 @@ namespace Yohash.React.Samples.BasicUi
           }
         case MenuLockAction _: {
             // close the submenu if we lock the interface
-            IsOpen = false;
-            return true;
+            if (IsOpen) {
+              IsOpen = false;
+              return true;
+            }
+            return false;
           }
         case SetSubTextAction ssta: {
             Subtext = ssta.Text;

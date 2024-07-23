@@ -1,3 +1,4 @@
+using Yohash.React;
 namespace Yohash.React.Samples.BasicUi
 {
   public class BasicUiState : State

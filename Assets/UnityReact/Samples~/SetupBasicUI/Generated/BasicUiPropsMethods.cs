@@ -1,3 +1,4 @@
+using Yohash.React;
 namespace Yohash.React.Samples.BasicUi
 {
   public partial class ListProps : Props
@@ -7,7 +8,7 @@ namespace Yohash.React.Samples.BasicUi
       ListObject = new ListObjectProps();
     }
 
-    public override bool DidUpdate()
+    public override bool DidUpdate(State state)
     {
       return true;
     }
@@ -28,12 +29,13 @@ namespace Yohash.React.Samples.BasicUi
     public override void BuildProps(State state)
     {
       var _state = state as BasicUiState;
-      Menu = _state.MenuState;
+      Menu = _state.MenuState.Clone() as MenuState;
     }
 
-    public override bool DidUpdate()
+    public override bool DidUpdate(State state)
     {
-      return Menu.IsDirty;
+      var _state = state as BasicUiState;
+      return _state.MenuState.IsDirty;
     }
   }
 
@@ -44,7 +46,7 @@ namespace Yohash.React.Samples.BasicUi
       Psychedlic = new PsychedlicState();
     }
 
-    public override bool DidUpdate()
+    public override bool DidUpdate(State state)
     {
       return true;
     }
@@ -65,12 +67,13 @@ namespace Yohash.React.Samples.BasicUi
     public override void BuildProps(State state)
     {
       var _state = state as BasicUiState;
-      Submenu = _state.SubmenuState;
+      Submenu = _state.SubmenuState.Clone() as SubmenuState;
     }
 
-    public override bool DidUpdate()
+    public override bool DidUpdate(State state)
     {
-      return Submenu.IsDirty;
+      var _state = state as BasicUiState;
+      return _state.SubmenuState.IsDirty;
     }
   }
 }
