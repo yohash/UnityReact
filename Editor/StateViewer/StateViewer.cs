@@ -72,7 +72,7 @@ namespace Yohash.React.Editor
         return;
       }
 
-      var stateField = typeof(Store).GetField("_state", BindingFlags.NonPublic | BindingFlags.Instance);
+      var stateField = typeof(Store).GetField("state", BindingFlags.NonPublic | BindingFlags.Instance);
       if (stateField == null) {
         Debug.LogError("State field not found.");
         return;
