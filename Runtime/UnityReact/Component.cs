@@ -27,7 +27,8 @@ namespace Yohash.React
 
     private void subscribe()
     {
-      if (Store.Instance == null) {
+      if (Store.Instance == null)
+      {
         throw new ComponentCreatedWithNoStore($"Component {name} was created with no Store instance.");
       }
 
@@ -47,7 +48,8 @@ namespace Yohash.React
     {
       Store.Instance?.Unsubscribe(onStoreUpdate);
       // iterate backwards over the children, destroying each one
-      for (int i = children.Count - 1; i >= 0; i--) {
+      for (int i = children.Count - 1; i >= 0; i--)
+      {
         var child = children.ElementAt(i);
         children.Remove(child);
         child.Unmount();
@@ -72,7 +74,8 @@ namespace Yohash.React
 
     internal void onStoreUpdate(State oldState, State state)
     {
-      if (props.DidUpdate(state)) {
+      if (props.DidUpdate(state))
+      {
         oldProps = props.Clone() as T;
         props.BuildProps(state);
         updateComponentAndChildren();
@@ -97,7 +100,8 @@ namespace Yohash.React
       // check list of elements for
       // (1) new elements - to mount & add
       var newElements = elements.Where(e => !children.Any(c => c.Key == e.Key)).ToList();
-      foreach (var element in newElements) {
+      foreach (var element in newElements)
+      {
         // immediately add the child element so it is tracked while
         // the mounter is generating the component
         children.Add(element);
@@ -108,7 +112,8 @@ namespace Yohash.React
 
       // (2) missing elements - to destroy & remove
       var missing = children.Where(c => !elements.Any(e => e.Key == c.Key)).ToList();
-      foreach (var child in missing) {
+      foreach (var child in missing)
+      {
         // immediately remove the child from the tracked list before unmounting
         children.Remove(child);
         await child.Unmount();
@@ -135,12 +140,9 @@ namespace Yohash.React
     public void UpdateElementWithProps(PropsContainer propsContainer)
     {
       // TODO - is an "Element did change" style of method here worth while?
-      //        Can we only update elements when needed, or can children-of-children
-      //        miss out on updates if this is done?
+      //        Can we only update elements when needed?
       oldProps = props.Clone() as T;
       props.BuildElement(propsContainer);
-      // update the child component, so it can receive the props update
-      // using the recursive method so elements can mount elements in turn
       // TBD - can we add a props-did-update check here?
       // if (propsDidUpdate(oldProps, props)) {
       updateComponentAndChildren();
