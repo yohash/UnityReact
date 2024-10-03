@@ -23,8 +23,7 @@ namespace Yohash.React.Editor
       var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
       var derivedTypes = new List<Type>();
 
-      foreach (var assembly in allAssemblies)
-      {
+      foreach (var assembly in allAssemblies) {
         var types = assembly.GetTypes()
           .Where(type => type.IsClass
             && !type.IsAbstract
@@ -42,8 +41,7 @@ namespace Yohash.React.Editor
     {
       var namespaceGroups = stateContainers.GroupBy(t => t.Namespace);
 
-      foreach (var namespaceGroup in namespaceGroups)
-      {
+      foreach (var namespaceGroup in namespaceGroups) {
         var code = GenerateMainStateCode(namespaceGroup.Key, namespaceGroup);
         var name = namespaceGroup.Key?.Split('.').Last() ?? Application.productName;
         var path = $"Assets/_Generated/{name}";
@@ -52,10 +50,8 @@ namespace Yohash.React.Editor
 
         var fullpath = Path.Combine(path, filename);
 
-        using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write))
-        {
-          using (var writer = new StreamWriter(stream))
-          {
+        using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write)) {
+          using (var writer = new StreamWriter(stream)) {
             writer.Write(code);
           }
         }
@@ -74,8 +70,7 @@ namespace Yohash.React.Editor
       bool noNamespace = namespaceName == null;
 
       var b = noNamespace ? "" : "  ";
-      if (!noNamespace)
-      {
+      if (!noNamespace) {
         sb.AppendLine($"namespace {namespaceName}");
         sb.AppendLine("{");
       }
@@ -83,8 +78,7 @@ namespace Yohash.React.Editor
       sb.AppendLine($"{b}{{");
 
       // **** Add fields
-      foreach (var type in stateContainers)
-      {
+      foreach (var type in stateContainers) {
         sb.AppendLine($"{b}  public {type.Name} {type.Name} = new {type.Name}();");
       }
 
@@ -92,8 +86,7 @@ namespace Yohash.React.Editor
       sb.AppendLine();
       sb.AppendLine($"{b}  public override void Reduce(IAction action)");
       sb.AppendLine($"{b}  {{");
-      foreach (var type in stateContainers)
-      {
+      foreach (var type in stateContainers) {
         sb.AppendLine($"{b}    {type.Name}.Reduce(action);");
       }
       sb.AppendLine($"{b}  }}");
@@ -103,8 +96,7 @@ namespace Yohash.React.Editor
       sb.AppendLine($"{b}  public override State Clone()");
       sb.AppendLine($"{b}  {{");
       sb.AppendLine($"{b}    var newState = new {name}State();");
-      foreach (var type in stateContainers)
-      {
+      foreach (var type in stateContainers) {
         sb.AppendLine($"{b}    newState.{type.Name} = {type.Name}.Clone() as {type.Name};");
       }
       sb.AppendLine($"{b}    return newState;");
@@ -112,8 +104,7 @@ namespace Yohash.React.Editor
 
       sb.AppendLine($"{b}}}");
 
-      if (!noNamespace)
-      {
+      if (!noNamespace) {
         sb.AppendLine("}");
       }
 

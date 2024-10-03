@@ -10,7 +10,8 @@ namespace Yohash.React.Editor
     // These public handles are used by the StateViewerWindow
     // ********************************************************************
     public static Lazy<GUIStyle> OpenBox = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = openBox.Value,
         stretchWidth = true,
@@ -22,7 +23,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> OpenBox_Contents = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = openBox.Value,
         stretchWidth = true,
@@ -34,7 +36,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> OpenHeader_Container = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = openHeader_Container.Value,
         onHover = openHoverHeader_Container.Value,
@@ -44,7 +47,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> OpenHeader = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 14,
         fontStyle = FontStyle.Bold,
         normal = openHeader.Value,
@@ -55,7 +59,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> ClosedHeader_Container = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = closedHeader_Container.Value,
         hover = closedHoverHeader_Container.Value,
@@ -65,7 +70,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> ClosedHeader = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 14,
         normal = closedHeader.Value,
         hover = closedHoverHeader.Value,
@@ -75,7 +81,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> ContainerBackground = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = closedHeader_Container.Value,
         stretchWidth = true,
@@ -84,7 +91,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> ContainerContents = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = closedHeader_Container.Value,
         stretchWidth = true,
@@ -93,7 +101,8 @@ namespace Yohash.React.Editor
       }
     );
     public static Lazy<GUIStyle> Index = new Lazy<GUIStyle>(() =>
-      new GUIStyle() {
+      new GUIStyle()
+      {
         fontSize = 12,
         normal = openHeader_Container.Value,
         hover = openHoverHeader_Container.Value,
@@ -107,55 +116,64 @@ namespace Yohash.React.Editor
     // These private handles are used to create the public handles
     // ********************************************************************
     private static Lazy<GUIStyleState> openHoverHeader = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = openHoverTexture.Value
       }
     );
     private static Lazy<GUIStyleState> openHeader = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = openHeaderTexture.Value
       }
     );
     private static Lazy<GUIStyleState> closedHoverHeader = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = closedHoverTexture.Value
       }
     );
     private static Lazy<GUIStyleState> closedHeader = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = closedTexture.Value
       }
     );
     private static Lazy<GUIStyleState> openBox = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = openBoxTexture.Value
       }
     );
     private static Lazy<GUIStyleState> openHeader_Container = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = openHeader_ContainerTexture.Value
       }
     );
     private static Lazy<GUIStyleState> openHoverHeader_Container = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = openHoverTexture_Container.Value
       }
     );
     private static Lazy<GUIStyleState> closedHoverHeader_Container = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = closedHoverTexture_Container.Value
       }
     );
     private static Lazy<GUIStyleState> closedHeader_Container = new Lazy<GUIStyleState>(() =>
-      new GUIStyleState {
+      new GUIStyleState
+      {
         textColor = Color.white,
         background = closedTexture_Container.Value
       }
@@ -166,7 +184,8 @@ namespace Yohash.React.Editor
     // ********************************************************************
     // a toggler (header) that is open/expanded
     private static Texture2D _openHover;
-    private static Lazy<Texture2D> openHoverTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> openHoverTexture = new Lazy<Texture2D>(() =>
+    {
       if (_openHover == null) {
         _openHover = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(Color.black, 1).ToArray();
@@ -176,7 +195,8 @@ namespace Yohash.React.Editor
       return _openHover;
     });
     private static Texture2D _openHeaderTexture;
-    private static Lazy<Texture2D> openHeaderTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> openHeaderTexture = new Lazy<Texture2D>(() =>
+    {
       if (_openHeaderTexture == null) {
         _openHeaderTexture = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(Color.grey, 1).ToArray();
@@ -188,7 +208,8 @@ namespace Yohash.React.Editor
 
     // a toggler (header) that is closed/collapsed
     private static Texture2D _closedHover;
-    private static Lazy<Texture2D> closedHoverTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> closedHoverTexture = new Lazy<Texture2D>(() =>
+    {
       if (_closedHover == null) {
         _closedHover = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.4f, .4f, .4f), 1).ToArray();
@@ -198,7 +219,8 @@ namespace Yohash.React.Editor
       return _closedHover;
     });
     private static Texture2D _closed;
-    private static Lazy<Texture2D> closedTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> closedTexture = new Lazy<Texture2D>(() =>
+    {
       if (_closed == null) {
         _closed = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.35f, .35f, .35f), 1).ToArray();
@@ -210,7 +232,8 @@ namespace Yohash.React.Editor
 
     // Backing box for the state container data
     private static Texture2D _openBoxTexture;
-    private static Lazy<Texture2D> openBoxTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> openBoxTexture = new Lazy<Texture2D>(() =>
+    {
       if (_openBoxTexture == null) {
         _openBoxTexture = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.45f, .45f, .45f), 1).ToArray();
@@ -221,7 +244,8 @@ namespace Yohash.React.Editor
     });
     // a toggler (container) that is open/expanded
     private static Texture2D _openHover_Container;
-    private static Lazy<Texture2D> openHoverTexture_Container = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> openHoverTexture_Container = new Lazy<Texture2D>(() =>
+    {
       if (_openHover_Container == null) {
         _openHover_Container = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.5f, .5f, .5f), 1).ToArray();
@@ -231,7 +255,8 @@ namespace Yohash.React.Editor
       return _openHover_Container;
     });
     private static Texture2D _openHeader_Container;
-    private static Lazy<Texture2D> openHeader_ContainerTexture = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> openHeader_ContainerTexture = new Lazy<Texture2D>(() =>
+    {
       if (_openHeader_Container == null) {
         _openHeader_Container = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.425f, .425f, .425f), 1).ToArray();
@@ -243,7 +268,8 @@ namespace Yohash.React.Editor
 
     // a toggler (container) that is closed/collapsed
     private static Texture2D _closed_ContainerHover_Container;
-    private static Lazy<Texture2D> closedHoverTexture_Container = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> closedHoverTexture_Container = new Lazy<Texture2D>(() =>
+    {
       if (_closed_ContainerHover_Container == null) {
         _closed_ContainerHover_Container = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.4f, .4f, .4f), 1).ToArray();
@@ -253,7 +279,8 @@ namespace Yohash.React.Editor
       return _closed_ContainerHover_Container;
     });
     private static Texture2D _closed_Container;
-    private static Lazy<Texture2D> closedTexture_Container = new Lazy<Texture2D>(() => {
+    private static Lazy<Texture2D> closedTexture_Container = new Lazy<Texture2D>(() =>
+    {
       if (_closed_Container == null) {
         _closed_Container = new Texture2D(1, 1);
         Color[] pixels = Enumerable.Repeat(new Color(.35f, .35f, .35f), 1).ToArray();
