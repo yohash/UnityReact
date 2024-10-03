@@ -13,10 +13,8 @@ namespace Yohash.React
   [System.Serializable]
   public class Store
   {
-    public static Store Instance
-    {
-      get
-      {
+    public static Store Instance {
+      get {
         return _instance;
       }
     }
@@ -42,8 +40,7 @@ namespace Yohash.React
       this.state = state;
 
       middleware = new List<Middleware>();
-      for (int i = 0; i < middlewares.Count; i++)
-      {
+      for (int i = 0; i < middlewares.Count; i++) {
         middleware.Add(middlewares[i]);
       }
     }
@@ -61,8 +58,7 @@ namespace Yohash.React
 
     public void Dispatch(IAction action)
     {
-      if (ActionQueueing && processing)
-      {
+      if (ActionQueueing && processing) {
         actionQueue.Enqueue(action);
         return;
       }
@@ -72,8 +68,7 @@ namespace Yohash.React
       processing = true;
 
       // process action through middleware
-      foreach (var middleware in middleware)
-      {
+      foreach (var middleware in middleware) {
         action = middleware.HandleAction(state, action, Dispatch);
         if (action == null) { break; }
       }
@@ -86,8 +81,7 @@ namespace Yohash.React
       OnStoreUpdate?.Invoke(oldState, state);
 
       processing = false;
-      if (actionQueue.Count > 0)
-      {
+      if (actionQueue.Count > 0) {
         Dispatch(actionQueue.Dequeue());
       }
     }
