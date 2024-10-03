@@ -68,7 +68,13 @@ namespace Yohash.React
       props.BuildProps(state);
       oldProps = props.Clone() as T;
       InitializeComponent();
-      // add a post-initialize update to extract any child elements
+
+      // next, add a post-initialize update to extract any child elements
+      // but first, see if the props have changed at all as a result of the
+      // InitializeComponent(); method
+      if (props.DidUpdate(state)) {
+        oldProps = props.Clone() as T;
+      }
       updateComponentAndChildren();
     }
 
