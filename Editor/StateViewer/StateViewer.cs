@@ -269,7 +269,8 @@ namespace Yohash.React.Editor
 
       // create/maintain toggle tracker
       if (!embeddedToggles.ContainsKey(key)) {
-        embeddedToggles[key] = new managedToggle() {
+        embeddedToggles[key] = new managedToggle()
+        {
           IsOn = false,
           Contents = new bool[length]
         };
@@ -306,7 +307,8 @@ namespace Yohash.React.Editor
 
       // create/maintain toggle tracker
       if (!embeddedToggles.ContainsKey(key)) {
-        embeddedToggles[key] = new managedToggle() {
+        embeddedToggles[key] = new managedToggle()
+        {
           IsOn = false,
           Contents = new bool[length]
         };

@@ -24,8 +24,7 @@ namespace Yohash.React.Editor
       var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
       var derivedTypes = new List<Type>();
 
-      foreach (var assembly in allAssemblies)
-      {
+      foreach (var assembly in allAssemblies) {
         var propsTypes = assembly.GetTypes()
           .Where(t => t.IsSubclassOf(typeof(Props)))
           .ToList();
@@ -39,8 +38,7 @@ namespace Yohash.React.Editor
     {
       var namespaceGroups = propsTypes.GroupBy(t => t.Namespace);
 
-      foreach (var namespaceGroup in namespaceGroups)
-      {
+      foreach (var namespaceGroup in namespaceGroups) {
         if (namespaceGroup.Key == "Yohash.React") { continue; }
         var code = GeneratePropsMethodsCode(namespaceGroup.Key, namespaceGroup);
         var name = namespaceGroup.Key?.Split('.').Last() ?? Application.productName;
@@ -50,10 +48,8 @@ namespace Yohash.React.Editor
 
         var fullpath = Path.Combine(path, filename);
 
-        using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write))
-        {
-          using (var writer = new StreamWriter(stream))
-          {
+        using (var stream = new FileStream(fullpath, FileMode.Create, FileAccess.Write)) {
+          using (var writer = new StreamWriter(stream)) {
             writer.Write(code);
           }
         }
@@ -72,14 +68,12 @@ namespace Yohash.React.Editor
       bool noNamespace = namespaceName == null;
 
       var b = noNamespace ? "" : "  ";
-      if (!noNamespace)
-      {
+      if (!noNamespace) {
         sb.AppendLine($"namespace {namespaceName}");
         sb.AppendLine("{");
       }
 
-      foreach (var propsType in propsTypes)
-      {
+      foreach (var propsType in propsTypes) {
         var propsName = propsType.Name;
         var stateContainerFields = propsType.GetFields(BindingFlags.Public | BindingFlags.Instance)
           .Where(f => f.FieldType.IsSubclassOf(typeof(StateContainer))
@@ -96,14 +90,12 @@ namespace Yohash.React.Editor
         // **** Generate class constructor
         sb.AppendLine($"{b}  public {propsName}()");
         sb.AppendLine($"{b}  {{");
-        foreach (var field in stateContainerFields)
-        {
+        foreach (var field in stateContainerFields) {
           var fieldName = field.Name;
           var fieldType = field.FieldType.Name;
           sb.AppendLine($"{b}    {fieldName} = new {fieldType}();");
         }
-        foreach (var container in propsContainerFields)
-        {
+        foreach (var container in propsContainerFields) {
           var fieldName = container.Name;
           var fieldType = container.FieldType.Name;
           sb.AppendLine($"{b}    {fieldName} = new {fieldType}();");
@@ -112,14 +104,12 @@ namespace Yohash.React.Editor
         sb.AppendLine();
 
         // **** Generate BuildProps method
-        if (stateContainerFields.Count > 0)
-        {
+        if (stateContainerFields.Count > 0) {
           sb.AppendLine($"{b}  public override void BuildProps(State state)");
           sb.AppendLine($"{b}  {{");
           sb.AppendLine($"{b}    var _state = state as {name}State;");
 
-          foreach (var field in stateContainerFields)
-          {
+          foreach (var field in stateContainerFields) {
             var fieldName = field.Name;
             var fieldType = field.FieldType.Name;
             sb.AppendLine($"{b}    {fieldName} = _state.{fieldType}.Clone() as {fieldType};");
@@ -132,31 +122,24 @@ namespace Yohash.React.Editor
         sb.AppendLine($"{b}  public override bool DidUpdate(State state)");
         sb.AppendLine($"{b}  {{");
 
-        if (stateContainerFields.Count > 1)
-        {
+        if (stateContainerFields.Count > 1) {
           sb.AppendLine($"{b}    var _state = state as {name}State;");
           sb.AppendLine($"{b}    return _state.{stateContainerFields[0].FieldType.Name}.IsDirty ||");
-          for (var i = 1; i < stateContainerFields.Count; i++)
-          {
+          for (var i = 1; i < stateContainerFields.Count; i++) {
             var fieldType = stateContainerFields[i].FieldType.Name;
             var line = $"{b}      _state.{fieldType}.IsDirty" + (i == stateContainerFields.Count - 1 ? ";" : " ||");
             sb.AppendLine(line);
           }
-        }
-        else if (stateContainerFields.Count == 1)
-        {
+        } else if (stateContainerFields.Count == 1) {
           sb.AppendLine($"{b}    var _state = state as {name}State;");
           sb.AppendLine($"{b}    return _state.{stateContainerFields[0].FieldType.Name}.IsDirty;");
-        }
-        else if (stateContainerFields.Count == 0)
-        {
+        } else if (stateContainerFields.Count == 0) {
           sb.AppendLine($"{b}    return true;");
         }
         sb.AppendLine("  }");
 
         // **** Generate BuildElement method
-        if (propsContainerFields.Count > 0)
-        {
+        if (propsContainerFields.Count > 0) {
           sb.AppendLine();
           sb.AppendLine($"{b}  public override void BuildElement(PropsContainer propsContainer)");
           sb.AppendLine($"{b}  {{");
@@ -168,14 +151,12 @@ namespace Yohash.React.Editor
         }
 
         sb.AppendLine($"{b}}}");
-        if (propsType != propsTypes.Last())
-        {
+        if (propsType != propsTypes.Last()) {
           sb.AppendLine();
         }
       }
 
-      if (!noNamespace)
-      {
+      if (!noNamespace) {
         sb.AppendLine("}");
       }
 
