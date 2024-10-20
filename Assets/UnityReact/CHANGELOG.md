@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.5] - 2024-10-21
+
+### Fixed
+
+- Added a check to `Component.UpdateElementWithProps()` to also consider `Props.DidUpdate()`. If the element's props are comprised of both `PropsContainer` and `StateContainer`, missing this additional check can result in an `Element` (`Component`) updating, but receiving its old `StateContainer` props
+
 ## [0.4.4] - 2024-10-03
 
 ### Fixed
