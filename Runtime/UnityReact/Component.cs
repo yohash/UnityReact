@@ -73,7 +73,7 @@ namespace Yohash.React
       if (props.DidUpdate(state)) {
         oldProps = props.Clone() as T;
       }
-      updateComponentAndChildren();
+      updateComponentAndChildren(state);
     }
 
     internal void onStoreUpdate(State oldState, State state)
@@ -81,17 +81,17 @@ namespace Yohash.React
       if (props.DidUpdate(state)) {
         oldProps = props.Clone() as T;
         props.BuildProps(state);
-        updateComponentAndChildren();
+        updateComponentAndChildren(state);
       }
     }
 
-    internal void updateComponentAndChildren()
+    internal void updateComponentAndChildren(State state)
     {
       var elements = UpdateComponent();
-      updateChildren(elements);
+      updateChildren(elements, state);
     }
 
-    internal async void updateChildren(IEnumerable<Element> elements)
+    internal async void updateChildren(IEnumerable<Element> elements, State state)
     {
       // TODO - this is a hack to prevent children from updating while we're awaiting
       //        any given child update to finish.
@@ -132,13 +132,13 @@ namespace Yohash.React
         //        if the mounter fails.
         while (child.Component == null) { await Task.Yield(); }
         // update the child component, so it can receive the props update
-        child.Component.UpdateElementWithProps(newProps);
+        child.Component.UpdateElementWithProps(newProps, state);
       }
 
       isUpdating = false;
     }
 
-    public void UpdateElementWithProps(PropsContainer propsContainer)
+    public void UpdateElementWithProps(PropsContainer propsContainer, State state)
     {
       // TODO - is an "Element did change" style of method here worth while?
       //        Can we only update elements when needed?
@@ -146,7 +146,10 @@ namespace Yohash.React
       props.BuildElement(propsContainer);
       // TBD - can we add a props-did-update check here?
       // if (propsDidUpdate(oldProps, props)) {
-      updateComponentAndChildren();
+      if (props.DidUpdate(state)) {
+        props.BuildProps(state);
+      }
+      updateComponentAndChildren(state);
     }
 
     public abstract void InitializeComponent();
