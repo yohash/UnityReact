@@ -112,7 +112,6 @@ namespace Yohash.React
         element.Component = await element.Mount();
         // once the new child is mounted, run their update method
         updateChildWithProps(element);
-        // ================================================
       }
 
       // (2) missing elements - to destroy & remove
@@ -129,7 +128,7 @@ namespace Yohash.React
         //        Is there any way we can more accurately await the mounter? Rather
         //        than just waiting for a frame? This could result in locked logic too,
         //        if the mounter fails.
-        while (child.Component == null) { await Task.Yield(); }
+        if (child.Component == null) { continue; }
         updateChildWithProps(child);
       }
 
