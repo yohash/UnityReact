@@ -110,6 +110,9 @@ namespace Yohash.React
         // the mounting method is awaited so that we can perform
         // async file or web IO to download assets
         element.Component = await element.Mount();
+        // once the new child is mounted, run their update method
+        updateChildWithProps(element);
+        // ================================================
       }
 
       // (2) missing elements - to destroy & remove
@@ -122,15 +125,19 @@ namespace Yohash.React
 
       // (3) existing elements - to update
       foreach (var child in children) {
-        // place props in a list of state containers, then set the local props state
-        // in order to update the component with props
-        var newProps = elements.FirstOrDefault(e => e.Key == child.Key)?.Props;
-        if (newProps == null) { continue; }
         // TODO - if the component is null, we need to wait for it to be mounted
         //        Is there any way we can more accurately await the mounter? Rather
         //        than just waiting for a frame? This could result in locked logic too,
         //        if the mounter fails.
         while (child.Component == null) { await Task.Yield(); }
+        updateChildWithProps(child);
+      }
+
+      void updateChildWithProps(Element child)
+      {
+        // TODO - is there a better way to directly reference the props?
+        var newProps = elements.FirstOrDefault(e => e.Key == child.Key)?.Props;
+        if (newProps == null) { return; }
         // update the child component, so it can receive the props update
         child.Component.UpdateElementWithProps(newProps, state);
       }
