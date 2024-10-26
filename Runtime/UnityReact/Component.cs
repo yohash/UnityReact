@@ -110,8 +110,9 @@ namespace Yohash.React
         // the mounting method is awaited so that we can perform
         // async file or web IO to download assets
         element.Component = await element.Mount();
-        // once the new child is mounted, run their update method
-        updateChildWithProps(element);
+        // once the new child is mounted, initialize then run their update method
+        var newProps = propsContainer(element);
+        element.Component.InitializeElement(newProps, state);
       }
 
       // (2) missing elements - to destroy & remove
@@ -124,24 +125,32 @@ namespace Yohash.React
 
       // (3) existing elements - to update
       foreach (var child in children) {
-        // TODO - if the component is null, we need to wait for it to be mounted
-        //        Is there any way we can more accurately await the mounter? Rather
-        //        than just waiting for a frame? This could result in locked logic too,
-        //        if the mounter fails.
+        // if the component is null, it likely hasn't finished mounting yet
+        // simply continue on, as each component will have its update method 
+        // called when it's done mounting
         if (child.Component == null) { continue; }
-        updateChildWithProps(child);
-      }
-
-      void updateChildWithProps(Element child)
-      {
-        // TODO - is there a better way to directly reference the props?
-        var newProps = elements.FirstOrDefault(e => e.Key == child.Key)?.Props;
-        if (newProps == null) { return; }
         // update the child component, so it can receive the props update
+        var newProps = propsContainer(child);
         child.Component.UpdateElementWithProps(newProps, state);
       }
 
+      // this container can be null, if an element is mounted without a custom
+      // set of props in the PropsContainer
+      // TODO - is there a better way to directly reference the props?
+      PropsContainer propsContainer(Element child)
+        => elements.FirstOrDefault(e => e.Key == child.Key)?.Props
+          ?? PropsContainer.Empty;
+
       isUpdating = false;
+    }
+
+    public void InitializeElement(PropsContainer propsContainer, State state)
+    {
+      // For initialization, build both props and element
+      props.BuildProps(state);
+      props.BuildElement(propsContainer);
+      oldProps = props.Clone() as T;
+      InitializeComponent();
     }
 
     public void UpdateElementWithProps(PropsContainer propsContainer, State state)
@@ -150,8 +159,7 @@ namespace Yohash.React
       //        Can we only update elements when needed?
       oldProps = props.Clone() as T;
       props.BuildElement(propsContainer);
-      // TBD - can we add a props-did-update check here?
-      // if (propsDidUpdate(oldProps, props)) {
+      // only rebuild the props if they've updated
       if (props.DidUpdate(state)) {
         props.BuildProps(state);
       }
