@@ -19,22 +19,24 @@ namespace Yohash.React
     public void Unmount() => unmount();
 
     private bool isUpdating = false;
+    private Store _store;
 
-    private void Start()
+    private void OnEnable()
     {
-      subscribe();
+      _ = subscribe();
     }
 
-    private void subscribe()
+    private async Task subscribe()
     {
+      _store = await Store.Instance;
       if (Store.Instance == null) {
-        throw new ComponentCreatedWithNoStore($"Component {name} was created with no Store instance.");
+        throw new ComponentCreatedWithNoStore($"Component {name} await store, was created with no Store instance.");
       }
 
-      Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
+      _store.Subscribe(onStoreUpdate, onStoreInitialize);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
       unmount();
     }
@@ -45,7 +47,7 @@ namespace Yohash.React
     /// </summary>
     internal void unmount()
     {
-      Store.Instance?.Unsubscribe(onStoreUpdate);
+      _store.Unsubscribe(onStoreUpdate);
       // iterate backwards over the children, destroying each one
       for (int i = children.Count - 1; i >= 0; i--) {
         var child = children.ElementAt(i);
@@ -56,23 +58,30 @@ namespace Yohash.React
 
     protected void dispatch(IAction action)
     {
-      Store.Instance.Dispatch(action);
+      _store.Dispatch(action);
     }
 
     internal void onStoreInitialize(State state)
     {
+      // if this Component was mounted by a parent Component via Element,
+      // we don't want to initialize from the store if the parent has to
+      // assemble a custom PropsContainer for this component
+      if (props.HasCustomProps) { return; }
+
       // first we build props from state, then assign
       // old props to the same set of props for initialization
       props.BuildProps(state);
       oldProps = props.Clone() as T;
       InitializeComponent();
 
-      // next, add a post-initialize update to extract any child elements
-      // but first, see if the props have changed at all as a result of the
-      // InitializeComponent(); method
+      // see if the props have changed at all as a result of the
+      // InitializeComponent() method. This can happen if dispatches to state
+      // occur during initialization
       if (props.DidUpdate(state)) {
         oldProps = props.Clone() as T;
       }
+
+      // finally, add a post-initialize update to extract any child elements
       updateComponentAndChildren(state);
     }
 
@@ -110,8 +119,9 @@ namespace Yohash.React
         // the mounting method is awaited so that we can perform
         // async file or web IO to download assets
         element.Component = await element.Mount();
-        // once the new child is mounted, run their update method
-        updateChildWithProps(element);
+        // once the new child is mounted, initialize then run their update method
+        var newProps = propsContainer(element);
+        element.Component.InitializeElement(newProps, state);
       }
 
       // (2) missing elements - to destroy & remove
@@ -124,34 +134,41 @@ namespace Yohash.React
 
       // (3) existing elements - to update
       foreach (var child in children) {
-        // TODO - if the component is null, we need to wait for it to be mounted
-        //        Is there any way we can more accurately await the mounter? Rather
-        //        than just waiting for a frame? This could result in locked logic too,
-        //        if the mounter fails.
+        // if the component is null, it likely hasn't finished mounting yet
+        // simply continue on, as each component will have its update method 
+        // called when it's done mounting
         if (child.Component == null) { continue; }
-        updateChildWithProps(child);
+        // update the child component, so it can receive the props update
+        var newProps = propsContainer(child);
+        child.Component.UpdateElement(newProps, state);
       }
 
-      void updateChildWithProps(Element child)
-      {
-        // TODO - is there a better way to directly reference the props?
-        var newProps = elements.FirstOrDefault(e => e.Key == child.Key)?.Props;
-        if (newProps == null) { return; }
-        // update the child component, so it can receive the props update
-        child.Component.UpdateElementWithProps(newProps, state);
-      }
+      // this container can be null, if an element is mounted without a custom
+      // set of props in the PropsContainer
+      // TODO - is there a better way to directly reference the props?
+      PropsContainer propsContainer(Element child)
+        => elements.FirstOrDefault(e => e.Key == child.Key)?.Props
+          ?? PropsContainer.Empty;
 
       isUpdating = false;
     }
 
-    public void UpdateElementWithProps(PropsContainer propsContainer, State state)
+    public void InitializeElement(PropsContainer propsContainer, State state)
+    {
+      // For initialization, build both props and element
+      props.BuildProps(state);
+      props.BuildElement(propsContainer);
+      oldProps = props.Clone() as T;
+      InitializeComponent();
+    }
+
+    public void UpdateElement(PropsContainer propsContainer, State state)
     {
       // TODO - is an "Element did change" style of method here worth while?
       //        Can we only update elements when needed?
       oldProps = props.Clone() as T;
       props.BuildElement(propsContainer);
-      // TBD - can we add a props-did-update check here?
-      // if (propsDidUpdate(oldProps, props)) {
+      // only rebuild the props if they've updated
       if (props.DidUpdate(state)) {
         props.BuildProps(state);
       }

@@ -44,14 +44,20 @@ namespace Yohash.React.Editor
 
     private void Update()
     {
-      if (Store.Instance != null
-        && Store.Instance.OnStoreUpdate != null
-        && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
-      ) {
-        Store.Instance.OnStoreUpdate += updateStateView;
-      }
       if (!Application.isPlaying) {
         embeddedToggles = new Dictionary<string, managedToggle>();
+        return;
+      }
+      updateAsync();
+    }
+
+    private async void updateAsync()
+    {
+      var store = await Store.Instance;
+      if (store.OnStoreUpdate != null
+        && !Array.Exists(store.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
+      ) {
+        store.OnStoreUpdate += updateStateView;
       }
       Repaint();
     }
@@ -64,9 +70,9 @@ namespace Yohash.React.Editor
       populateState();
     }
 
-    private void populateState()
+    private async void populateState()
     {
-      var store = Store.Instance;
+      var store = await Store.Instance;
       if (store == null) {
         Debug.LogError("No instance of Store.");
         return;
