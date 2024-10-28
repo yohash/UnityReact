@@ -5,11 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2024-10-29
+
+### Added
+
+- Modify `IComponent` with an `InitializeElement(PropsContainer, State)` to explicitly initialize mounted `Element`s
+- Added property `bool Props.HasCustomProps`, which is defined by code generation in `PropsGenerator`. We reference this bool in `Component.onStoreInitialize()` and bypass store initialization, waiting for `IComponent.InitializeElement()` instead. This guarantees one "initialization" call in a `Component`, whether it has custom props (an `Element`) or not.
+- Created an asynchronous handle to `Store.Instance` to handle uncontrolled start-up order. If a `Component` subscribes before the `Store` has been created, this new handle allows for a `var store = await Store.Instance` syntax to handle the `null` store instance. 
+
+### Fixed
+
+- Fix a bug where `Element` would initialize (when it ran its `Start()` method) but would have `default` props when `Component.InitializeComponent()` ran until the `Element.UpdateElementWithProps()` ran.
+- Minor fix to handle less-than-0 array indexing in the sample scene
+
+### Changed
+
+- Changed `IComponent.UpdateElementWithProps()` to `IComponent.UpdateElement()`
+- `Component` re-worked to call `InitializeElement()` when new elements were added, instead of calling `UpdateElement()`
+- Moved `Component` subscribe/unsubscribe code from `Start()`/`OnDestroy()` into `OnDisable()`/`OnDisable()`, respectively. This will enable `Component`s to be re-used (pooled).
+- `StateViewer` and `ComponentViewer` modified to handle `async Store.Instance` handle.
+
 ## [0.4.5] - 2024-10-21
 
 ### Fixed
 
-- Added a check to `Component.UpdateElementWithProps()` to also consider `Props.DidUpdate()`. If the element's props are comprised of both `PropsContainer` and `StateContainer`, missing this additional check can result in an `Element` (`Component`) updating, but receiving its old `StateContainer` props
+- Added a check to `Component.UpdateElementWithProps()` to also consider `Props.DidUpdate()` and then `Props.BuildProps()` if warranted. If the element's props are comprised of both `PropsContainer` and `StateContainer`, missing this additional check can result in an `Element` (`Component`) updating with its `PropsContainer`, but receiving its old `StateContainer` props
+
 
 ## [0.4.4] - 2024-10-03
 
