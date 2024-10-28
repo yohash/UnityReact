@@ -63,7 +63,7 @@ namespace Yohash.React.Editor
     {
       var store = await Store.Instance;
       if (store.OnStoreUpdate != null
-        && !Array.Exists(store.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
+        && !Array.Exists(store.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateComponentView")
       ) {
         store.OnStoreUpdate += updateComponentView;
       }
