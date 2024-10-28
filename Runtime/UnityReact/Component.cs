@@ -19,19 +19,21 @@ namespace Yohash.React
     public void Unmount() => unmount();
 
     private bool isUpdating = false;
+    private Store _store;
 
     private void OnEnable()
     {
-      subscribe();
+      _ = subscribe();
     }
 
-    private void subscribe()
+    private async Task subscribe()
     {
+      _store = await Store.Instance;
       if (Store.Instance == null) {
-        throw new ComponentCreatedWithNoStore($"Component {name} was created with no Store instance.");
+        throw new ComponentCreatedWithNoStore($"Component {name} await store, was created with no Store instance.");
       }
 
-      Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
+      _store.Subscribe(onStoreUpdate, onStoreInitialize);
     }
 
     private void OnDisable()
@@ -45,7 +47,7 @@ namespace Yohash.React
     /// </summary>
     internal void unmount()
     {
-      Store.Instance?.Unsubscribe(onStoreUpdate);
+      _store.Unsubscribe(onStoreUpdate);
       // iterate backwards over the children, destroying each one
       for (int i = children.Count - 1; i >= 0; i--) {
         var child = children.ElementAt(i);
@@ -56,7 +58,7 @@ namespace Yohash.React
 
     protected void dispatch(IAction action)
     {
-      Store.Instance.Dispatch(action);
+      _store.Dispatch(action);
     }
 
     internal void onStoreInitialize(State state)

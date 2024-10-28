@@ -52,18 +52,23 @@ namespace Yohash.React.Editor
 
     private void Update()
     {
-      if (Store.Instance != null
-        && Store.Instance.OnStoreUpdate != null
-        && !Array.Exists(Store.Instance.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateComponentView")
-      ) {
-        Store.Instance.OnStoreUpdate += updateComponentView;
-      }
       if (!Application.isPlaying) {
         embeddedToggles = new Dictionary<string, managedToggle>();
+        return;
+      }
+      updateAsync();
+    }
+
+    private async void updateAsync()
+    {
+      var store = await Store.Instance;
+      if (store.OnStoreUpdate != null
+        && !Array.Exists(store.OnStoreUpdate.GetInvocationList(), x => x.Method.Name == "updateStateView")
+      ) {
+        store.OnStoreUpdate += updateComponentView;
       }
       Repaint();
     }
-
 
     private async void updateComponentView(State oldState, State newState)
     {

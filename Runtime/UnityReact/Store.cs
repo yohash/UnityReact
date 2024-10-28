@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Yohash.React
@@ -13,12 +15,10 @@ namespace Yohash.React
   [System.Serializable]
   public class Store
   {
-    public static Store Instance {
-      get {
-        return _instance;
-      }
-    }
     private static Store _instance;
+    private static readonly TaskCompletionSource<Store> _initializationSource
+      = new TaskCompletionSource<Store>();
+    public static Task<Store> Instance => _initializationSource.Task;
 
     public bool Log = false;
 
@@ -36,12 +36,28 @@ namespace Yohash.React
 
     public Store(State state, List<Middleware> middlewares)
     {
-      _instance = this;
-      this.state = state;
+      InitializeAsync(state, middlewares);
+    }
 
-      middleware = new List<Middleware>();
-      for (int i = 0; i < middlewares.Count; i++) {
-        middleware.Add(middlewares[i]);
+    private async void InitializeAsync(State state, List<Middleware> middlewares)
+    {
+      try {
+        // create the instance and set the result on our task completion source
+        // so that any instance of `Component` that were created before this can
+        // await the task and the associated singleton
+        _instance = this;
+
+        // perform actual initialization of the store
+        this.state = state;
+        middleware = new List<Middleware>();
+        for (int i = 0; i < middlewares.Count; i++) {
+          middleware.Add(middlewares[i]);
+        }
+
+        // finally, after full store initialization, set the result
+        _initializationSource.TrySetResult(_instance);
+      } catch (Exception ex) {
+        _initializationSource.TrySetException(ex);
       }
     }
 
