@@ -7,7 +7,7 @@ namespace Yohash.React
     Transform Transform { get; }
     UnityEngine.Object Object { get; }
     void InitializeElement(PropsContainer props, State state);
-    void UpdateElementWithProps(PropsContainer props, State state);
+    void UpdateElement(PropsContainer props, State state);
     void Unmount();
   }
 }
