@@ -136,7 +136,7 @@ namespace Yohash.React.Editor
         } else if (stateContainerFields.Count == 0) {
           sb.AppendLine($"{b}    return true;");
         }
-        sb.AppendLine("  }");
+        sb.AppendLine("    }");
 
         // **** Generate BuildElement method
         if (propsContainerFields.Count > 0) {
@@ -148,6 +148,8 @@ namespace Yohash.React.Editor
           var fieldType = propsContainerFields[0].FieldType.Name;
           sb.AppendLine($"{b}    {fieldName} = propsContainer as {fieldType};");
           sb.AppendLine($"{b}  }}");
+          sb.AppendLine("");
+          sb.AppendLine($"{b}  public override bool HasCustomProps => true; ");
         }
 
         sb.AppendLine($"{b}}}");

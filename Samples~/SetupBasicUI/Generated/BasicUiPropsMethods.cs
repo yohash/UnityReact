@@ -17,6 +17,8 @@ namespace Yohash.React.Samples.BasicUi
     {
       ListObject = propsContainer as ListObjectProps;
     }
+
+    public override bool HasCustomProps => true; 
   }
 
   public partial class MenuProps : Props
@@ -55,6 +57,8 @@ namespace Yohash.React.Samples.BasicUi
     {
       Psychedlic = propsContainer as PsychedlicState;
     }
+
+    public override bool HasCustomProps => true; 
   }
 
   public partial class SubMenuProps : Props

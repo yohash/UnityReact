@@ -20,7 +20,7 @@ namespace Yohash.React
 
     private bool isUpdating = false;
 
-    private void Start()
+    private void OnEnable()
     {
       subscribe();
     }
@@ -34,7 +34,7 @@ namespace Yohash.React
       Store.Instance.Subscribe(onStoreUpdate, onStoreInitialize);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
       unmount();
     }
@@ -61,18 +61,25 @@ namespace Yohash.React
 
     internal void onStoreInitialize(State state)
     {
+      // if this Component was mounted by a parent Component via Element,
+      // we don't want to initialize from the store if the parent has to
+      // assemble a custom PropsContainer for this component
+      if (props.HasCustomProps) { return; }
+
       // first we build props from state, then assign
       // old props to the same set of props for initialization
       props.BuildProps(state);
       oldProps = props.Clone() as T;
       InitializeComponent();
 
-      // next, add a post-initialize update to extract any child elements
-      // but first, see if the props have changed at all as a result of the
-      // InitializeComponent(); method
+      // see if the props have changed at all as a result of the
+      // InitializeComponent() method. This can happen if dispatches to state
+      // occur during initialization
       if (props.DidUpdate(state)) {
         oldProps = props.Clone() as T;
       }
+
+      // finally, add a post-initialize update to extract any child elements
       updateComponentAndChildren(state);
     }
 

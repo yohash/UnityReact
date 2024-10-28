@@ -9,5 +9,6 @@ namespace Yohash.React
     public virtual void BuildProps(State state) { }
     public virtual bool DidUpdate(State state) { return false; }
     public virtual void BuildElement(PropsContainer propsContainer) { }
+    public virtual bool HasCustomProps => false;
   };
 }
