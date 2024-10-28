@@ -140,7 +140,7 @@ namespace Yohash.React
         if (child.Component == null) { continue; }
         // update the child component, so it can receive the props update
         var newProps = propsContainer(child);
-        child.Component.UpdateElementWithProps(newProps, state);
+        child.Component.UpdateElement(newProps, state);
       }
 
       // this container can be null, if an element is mounted without a custom
@@ -162,7 +162,7 @@ namespace Yohash.React
       InitializeComponent();
     }
 
-    public void UpdateElementWithProps(PropsContainer propsContainer, State state)
+    public void UpdateElement(PropsContainer propsContainer, State state)
     {
       // TODO - is an "Element did change" style of method here worth while?
       //        Can we only update elements when needed?
