@@ -29,6 +29,7 @@ namespace Yohash.React.Samples.BasicUi
             return true;
           }
         case ListRemoveObject _: {
+            if (ListValues.Length == 0) { return false; }
             Array.Resize(ref ListValues, ListValues.Length - 1);
             return true;
           }
