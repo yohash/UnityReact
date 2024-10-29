@@ -21,7 +21,7 @@ namespace Yohash.React
     private bool isUpdating = false;
     private Store _store;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
       _ = subscribe();
     }
@@ -36,7 +36,7 @@ namespace Yohash.React
       _store.Subscribe(onStoreUpdate, onStoreInitialize);
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
       unmount();
     }
