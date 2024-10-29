@@ -136,7 +136,7 @@ namespace Yohash.React.Editor
         } else if (stateContainerFields.Count == 0) {
           sb.AppendLine($"{b}    return true;");
         }
-        sb.AppendLine("    }");
+        sb.AppendLine($"{b}  }}");
 
         // **** Generate BuildElement method
         if (propsContainerFields.Count > 0) {
