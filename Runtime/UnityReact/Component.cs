@@ -122,6 +122,8 @@ namespace Yohash.React
         // once the new child is mounted, initialize then run their update method
         var newProps = propsContainer(element);
         element.Component.InitializeElement(newProps, state);
+        // set the index upon creation
+        element.Component.Transform.SetSiblingIndex(element.Index);
       }
 
       // (2) missing elements - to destroy & remove
@@ -141,6 +143,8 @@ namespace Yohash.React
         // update the child component, so it can receive the props update
         var newProps = propsContainer(child);
         child.Component.UpdateElement(newProps, state);
+        // update the index in case it has changed
+        child.Component.Transform.SetSiblingIndex(child.Index);
       }
 
       // this container can be null, if an element is mounted without a custom
