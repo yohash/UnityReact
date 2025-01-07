@@ -30,17 +30,22 @@ namespace Yohash.React
     // the component reference after it's mounted
     public IComponent Component;
 
+    // the index of this element in the parent's children
+    public int Index;
+
     public Element(
       Func<Task<IComponent>> mounter,
       Func<IComponent, Task> unmounter,
       string key,
-      PropsContainer props
+      PropsContainer props,
+      int index = -1
     )
     {
       _mount = mounter;
       _unmount = unmounter;
       Key = key;
       Props = props;
+      Index = index;
     }
   }
 }
