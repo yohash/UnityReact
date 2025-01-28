@@ -59,6 +59,7 @@ namespace Yohash.React.Editor
       ) {
         store.OnStoreUpdate += updateStateView;
       }
+      populateState();
       Repaint();
     }
 
