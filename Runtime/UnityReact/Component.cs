@@ -33,7 +33,11 @@ namespace Yohash.React
         throw new ComponentCreatedWithNoStore($"Component {name} await store, was created with no Store instance.");
       }
 
-      _store.Subscribe(onStoreUpdate, onStoreInitialize);
+      try {
+        _store.Subscribe(onStoreUpdate, onStoreInitialize);
+      } catch (System.Exception ex) {
+        Debug.LogError(ex);
+      }
     }
 
     protected virtual void OnDisable()
