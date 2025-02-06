@@ -79,7 +79,7 @@ namespace Yohash.React
         return;
       }
 
-      if (Log) { Debug.Log(action.ToString()); }
+      if (Log) { Debug.Log(action.ToDetailedString()); }
 
       processing = true;
 
