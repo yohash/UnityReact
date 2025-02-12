@@ -170,7 +170,10 @@ namespace Yohash.React.Editor
       // (3) check for arrays using IsArray
       //    quickest way to find them and display just like IEnumberables
       //
-      // (4) check for Nullable types and Tuples by using
+      // (4) check for Nullable types  with combination of IsGenericType and
+      //      IsValueType backed by the test for typeof(Nullable<>)
+      //
+      // (5) check for Nullable types and Tuples by using
       //      the special combination of IsGenericType and IsValueType
       //
       // *** everything remaining here is a user-defined class or struct ***
@@ -178,8 +181,8 @@ namespace Yohash.React.Editor
       //    (all primitives that might be caught again here under IsValueType are done)
       //    (all arrays that might be caught again here under IsClass are done)
       //
-      // (5) check for classes using IsClass
-      // (6) check for structs using IsValueType (???)
+      // (6) check for classes using IsClass
+      // (7) check for structs using IsValueType (???)
 
       // store the generic type to avoid testing in conditionals
       var genericType = type.IsGenericType
@@ -229,8 +232,30 @@ namespace Yohash.React.Editor
         //fieldInfoProperties(parent, info);
         renderIEnumerable(title, type, array, key, nested);
       }
-      // (4) try to use the "Special" combo of IsGenericType and IsValueType to detect
-      // Tuples and Nullable types
+      // (4) try to use the combo of IsGenericType and IsValueType and then specifically look
+      // for nullable types
+      else if (type.IsGenericType && type.IsValueType && genericType == typeof(Nullable<>)) {
+        var underlyingType = type.GetGenericArguments()[0];
+
+        string typeText = $"<b>{underlyingType.Name}?</b>: {name}";
+        GUILayout.BeginHorizontal();
+        GUILayout.Box(typeText, Styles.OpenBox_Contents.Value, GUILayout.ExpandWidth(true));
+
+        if (value == null) {
+          GUILayout.Box("NULL", Styles.OpenBox_Contents.Value, GUILayout.ExpandWidth(true));
+        } else {
+          // Pass the unwrapped value if it's a struct
+          if (underlyingType.IsValueType) {
+            var key = string.Concat(type.ToString(), name);
+            renderStructOrClass(underlyingType, value, name, key, nested);
+          } else {
+            GUILayout.Box(value.ToString(), Styles.OpenBox_Contents.Value, GUILayout.ExpandWidth(true));
+          }
+        }
+
+        GUILayout.EndHorizontal();
+      }
+      // (5) try to use the "Special" combo of IsGenericType and IsValueType to detect Tuples 
       else if (type.IsGenericType && type.IsValueType && type.GetGenericArguments().Count() > 0) {
         //object value = info.GetValue(parent);
         var args = type.GetGenericArguments();
@@ -250,8 +275,8 @@ namespace Yohash.React.Editor
         GUILayout.Box(valueText, Styles.OpenBox_Contents.Value, GUILayout.ExpandWidth(true));
         GUILayout.EndHorizontal();
       }
-      // (5) capture classes -- only non-primitive, non-IList, non-string classes should remain
-      // (6) capture structs -- they will render the same way
+      // (6) capture classes -- only non-primitive, non-IList, non-string classes should remain
+      // (7) capture structs -- they will render the same way
       else if (type.IsClass || type.IsValueType) {
         var key = string.Concat(type.ToString(), name);
         renderStructOrClass(type, value, name, key, nested);
