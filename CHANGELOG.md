@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.9] - 2025-02-19
+
+### Added
+
+- Added an `IAction` reflection-based `ToDetailedString()` method for `Store` debugging to show action member variables
+
+### Fixed
+
+- Correct the state viewer to properly unpack and display nullable types
+
+### Changed
+
+- Increase reactivity of state viewer by adding state populate to the `Update` method
+- Add try-catch around the `_store.Subscribe()` call inside `Component`, with deliberate logging to track any errors in the `async` subscribe-and-initialize loop
+
 ## [0.4.8] - 2025-01-08
 
 ### Added
