@@ -9,8 +9,8 @@ namespace Yohash.React
     {
       var type = action.GetType();
       var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-      var fieldValues = string.Join(", ", fields.Select(f => $"{f.Name}={f.GetValue(action)}"));
-      return $"{type.Name}({fieldValues})";
+      var fieldValues = string.Join("\n\t", fields.Select(f => $"{f.Name}\t = {f.GetValue(action)}"));
+      return $"{type.Name}\n\t{fieldValues}";
     }
   }
 }
