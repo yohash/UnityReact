@@ -74,12 +74,20 @@ namespace Yohash.React
 
     public void Dispatch(IAction action)
     {
+      if (Log && action is not IDebugAction) {
+        action = action.AsDebug();
+      }
+
       if (ActionQueueing && processing) {
         actionQueue.Enqueue(action);
         return;
       }
 
-      if (Log) { Debug.Log(action.ToDetailedString()); }
+      if (Log) {
+        var debug = (DebugAction)action;
+        Debug.Log(debug.ToDetailedString());
+        action = debug.Action;
+      }
 
       processing = true;
 
