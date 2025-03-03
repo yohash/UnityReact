@@ -18,30 +18,12 @@ namespace Yohash.React
     {
       var details = (debug.Action).ToDetailedString();
       var trace = debug.StackTrace.GetFrames();
-      return $"{details}\n\tStackTrace\t = {string.Join("\n\t\t", trace.Select(t => t.ToString()))}" +
-        $"\n\n***\n" +
-        $"{debug.StackTrace.ToString()}\n***\n\n";
+      return $"{details}\n\tStackTrace\t = {debug.StackTrace.ToString()}\n***\n\n";
     }
 
     public static IDebugAction AsDebug(this IAction action)
     {
       return new DebugAction(action);
     }
-  }
-
-
-  public class DebugAction : IDebugAction
-  {
-    private StackTrace _stackTrace;
-    private IAction _action;
-
-    public DebugAction(IAction action)
-    {
-      _action = action;
-      _stackTrace = new StackTrace(true);
-    }
-
-    public IAction Action => _action;
-    public StackTrace StackTrace => _stackTrace;
   }
 }
